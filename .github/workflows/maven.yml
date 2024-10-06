@@ -8,12 +8,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3  # Mise à jour vers v3
+      uses: actions/checkout@v3
 
     - name: Set up JDK 11
       uses: actions/setup-java@v3
@@ -23,6 +22,8 @@ jobs:
 
     - name: Build with Maven
       run: mvn clean install
+      working-directory: ./CHATBOT  # Spécifie le chemin du dossier contenant `pom.xml`
 
     - name: Run Tests
       run: mvn test
+      working-directory: ./CHATBOT  # Spécifie également le chemin pour exécuter les tests

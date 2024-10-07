@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: fr.insa.maven.demo.demoMavenProject.UserServiceTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec <<< FAILURE!
+fr.insa.maven.demo.demoMavenProject.UserServiceTest.testRegisterDemandeur()  Time elapsed: 0.003 sec  <<< FAILURE!
+java.lang.NullPointerException: Cannot invoke "java.sql.Connection.prepareStatement(String, int)" because "this.conn" is null
+	at fr.insa.maven.demo.demoMavenProject.UserServiceTest.testRegisterDemandeur(UserServiceTest.java:48)
+

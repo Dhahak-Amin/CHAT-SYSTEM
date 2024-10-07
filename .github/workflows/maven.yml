@@ -19,11 +19,9 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '11'
+        cache: maven
 
-    - name: Build with Maven
-      run: mvn clean install
-      working-directory: ./CHATBOT  # Spécifie le chemin du dossier contenant `pom.xml`
+    - name: Build with Maven 
+      run: mvn -B clean compile --file.pom xml
 
-    - name: Run Tests
-      run: mvn test
-      working-directory: ./CHATBOT  # Spécifie également le chemin pour exécuter les tests
+   

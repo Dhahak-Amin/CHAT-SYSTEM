@@ -1,5 +1,6 @@
 package fr.insa.maven.demo.demoMavenProject;
 
+
 public class Demandeur extends User {
     private String description;
     private String needs;

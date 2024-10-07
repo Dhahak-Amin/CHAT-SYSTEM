@@ -1,6 +1,6 @@
+package fr.insa.maven.demo.demoMavenProject;
 
 
-import fr.insa.maven.demo.demoMavenProject.*;
 import fr.insa.maven.demo.demoMavenProject.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

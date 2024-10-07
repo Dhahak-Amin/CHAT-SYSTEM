@@ -36,4 +36,8 @@ public class Demandeur extends User {
     public void setLocation(String location) {
         this.location = location;
     }
+    
+    
+    
+    
 }

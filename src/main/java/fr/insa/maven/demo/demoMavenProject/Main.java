@@ -36,6 +36,12 @@ public class Main {
                 System.out.println("Échec de la connexion.");
             }
 
+            User updatedUser = new User("John", "Doe", "john.doe@example.com", "newpassword123");
+            userService.updateUser(updatedUser);
+
+            userService.deleteUser("john.doe@example.com");
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

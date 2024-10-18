@@ -6,8 +6,8 @@ public class Demandeur extends User {
     private String needs;
     private String location;
 
-    public Demandeur(String firstname, String lastname, String description, String needs, String location) {
-        super(firstname, lastname);
+    public Demandeur(String firstname, String lastname, String description, String needs, String location, String email, String password) {
+        super(firstname, lastname,email,password);
         this.description = description;
         this.needs = needs;
         this.location = location;

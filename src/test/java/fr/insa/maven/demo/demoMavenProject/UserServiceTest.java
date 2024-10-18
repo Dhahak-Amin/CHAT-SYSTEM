@@ -14,7 +14,7 @@ public class UserServiceTest {
     private Connection conn;
 
     // Informations de connexion à la base de données
-    static final String DB_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012"; // Remplacer par votre URL de base de données
+    static final String DB_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012";
     static final String USER = "projet_gei_012";
     static final String PASS = "dith1Que"; 
 
@@ -41,7 +41,7 @@ public class UserServiceTest {
                 "SMith",
                 "Besoin d'une assistance médicale quotidienne",
                 "Assistance médicale 2",
-                "Paris"
+                "Paris","elian@gmailcom","5665262"
         );
 
         // Insérer le demandeur dans la table User

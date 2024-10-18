@@ -32,13 +32,6 @@ public class Frame extends JFrame {
         JButton removeButton = new JButton("Suppr");
 
         // ActionListener pour le bouton "Add"
-        addButton.addActionListener(e -> {
-
-            if (!demande.isEmpty()) {
-                listModel.addElement(demande);
-                textField.setText(""); // Réinitialise le champ de texte
-            }
-        });
 
 
         // ActionListener pour le bouton "Suppr"

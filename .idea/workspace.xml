@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aff28f5a-7cca-4153-b19a-2cdf8758afd5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/UserServiceDeleteTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/UserServiceUpdateTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/UserService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

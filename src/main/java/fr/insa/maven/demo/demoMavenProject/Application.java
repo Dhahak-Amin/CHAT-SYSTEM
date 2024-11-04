@@ -9,7 +9,7 @@ public class Application {
     private User user;
 
     public Application() {
-        Frame frame = new Frame();
+
         String TypeUser = getText("Demandeur, validateur ou benevole ?");
 
 

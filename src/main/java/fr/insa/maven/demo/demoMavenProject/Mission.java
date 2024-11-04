@@ -1,14 +1,18 @@
 package fr.insa.maven.demo.demoMavenProject;
-
+import java.util.Scanner;
 public class Mission {
     private String etat;
-    private String intitule;
-    private Demandeur demandeur; // Attribut de type Demandeur
 
-    public Mission(String etat, String intitule, Demandeur demandeur) {
+
+    private Place place ;
+    private String intitule;
+    private User user; // Attribut de type Demandeur
+
+    public Mission(String etat, String intitule, User user, Place place) {
         this.etat = etat;
+        this.place=place ;
         this.intitule = intitule;
-        this.demandeur = demandeur;
+        this.user = user;
     }
 
     // Getter pour 'etat'
@@ -17,6 +21,8 @@ public class Mission {
     }
 
     // Setter pour 'etat'
+
+
     public void setEtat(String etat) {
         this.etat = etat;
     }
@@ -32,12 +38,20 @@ public class Mission {
     }
 
     // Getter pour 'demandeur'
-    public Demandeur getDemandeur() {
-        return demandeur;
+    public User getUser() {
+        return user;
     }
 
     // Setter pour 'demandeur'
-    public void setDemandeur(Demandeur demandeur) {
-        this.demandeur = demandeur;
+    public void setUser(User user) {
+        this.user = user;
     }
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
 }

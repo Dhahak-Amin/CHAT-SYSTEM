@@ -22,12 +22,12 @@ public class AllMissions {
     }
 
     // Method to update a mission's details
-    public boolean updateMission(String intitule, String newEtat, String newIntitule, Demandeur newDemandeur) {
+    public boolean updateMission(String intitule, String newEtat, String newIntitule, User newuser) {
         for (Mission mission : missions) {
             if (mission.getIntitule().equals(intitule)) {
                 mission.setEtat(newEtat);
                 mission.setIntitule(newIntitule);
-                mission.setDemandeur(newDemandeur);
+                mission.setUser(newuser);
                 return true;
             }
         }
@@ -65,7 +65,7 @@ public class AllMissions {
         for (Mission mission : missions) {
             sb.append("Mission: ").append(mission.getIntitule())
               .append(", Etat: ").append(mission.getEtat())
-              .append(", Demandeur: ").append(mission.getDemandeur()).append("\n");
+              .append(", Demandeur: ").append(mission.getUser()).append("\n");
         }
         return sb.toString();
     }

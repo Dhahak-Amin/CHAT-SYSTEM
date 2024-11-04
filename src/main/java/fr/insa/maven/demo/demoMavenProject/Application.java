@@ -6,6 +6,7 @@ public class Application {
 
 
     private Frame frame;
+    private User user;
 
     public Application() {
         Frame frame = new Frame();
@@ -14,13 +15,13 @@ public class Application {
 
 
         if (TypeUser.equals("demandeur") || TypeUser.equals("Demandeur")) {
-            Demandeur demander = CreateDemandeur();
+            user = CreateDemandeur();
 
         } else if (TypeUser.equals("benevole") || TypeUser.equals("Benevole")) {
-            Benevole benevole = CreateBenevole();
+            user= CreateBenevole();
         }
         else if (TypeUser.equals("Validateur") || TypeUser.equals("validateur")) {
-            Validateur validateur = CreateValidateur();
+            user= CreateValidateur();
 
         }else {
             System.out.println("L'utilisateur n'est ni un Demandeur ni un Benevole.");
@@ -66,6 +67,8 @@ public class Application {
         Validateur validateur = new Validateur(Nom,Prenom,email,password);
         return validateur;
     }
+
+
 
 
     private String getText(String text) {

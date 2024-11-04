@@ -1,6 +1,8 @@
 package fr.insa.maven.demo.demoMavenProject;
 
 
+import java.util.Scanner;
+
 public class Demandeur extends User {
     private String description;
     private String needs;
@@ -18,7 +20,41 @@ public class Demandeur extends User {
         return description;
     }
 
-    public void setDescription(String description) {
+    private Mission createMission() {
+
+            String intitule = getText("Quel est ta demande");
+            Place place = choosePlace();
+            // Création d'une nouvelle mission
+            Mission mission= new Mission("En attente", intitule,this, place );
+            return mission; // Retourner la mission créée
+        }
+
+
+    public Place choosePlace() {
+        Scanner scanner = new Scanner(System.in);
+        Place[] places = Place.values();
+
+        System.out.println("Choisissez un endroit pour la mission :");
+        for (int i = 0; i < places.length; i++) {
+            System.out.println((i + 1) + ". " + places[i]);
+        }
+
+        int choice;
+        do {
+            System.out.print("Entrez le numéro de votre choix : ");
+            while (!scanner.hasNextInt()) {
+                System.out.println("Veuillez entrer un nombre valide.");
+                scanner.next(); // Ignorer l'entrée non valide
+            }
+            choice = scanner.nextInt();
+        } while (choice < 1 || choice > places.length);
+
+        return places[choice - 1]; // Retourner la place choisie
+    }
+
+
+
+        public void setDescription(String description) {
         this.description = description;
     }
 
@@ -32,6 +68,18 @@ public class Demandeur extends User {
 
     public String getLocation() {
         return location;
+    }
+
+    private String getText(String text) {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print(text);
+        String UserText = scanner.nextLine(); // Lire la ligne de texte saisie par l'utilisateur
+        scanner.close();
+        return UserText ;
+
+
+
     }
 
     public void setLocation(String location) {

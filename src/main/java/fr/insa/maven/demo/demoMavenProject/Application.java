@@ -4,11 +4,17 @@ import java.util.Scanner;
 
 public class Application {
 
+<<<<<<< Updated upstream
 
     private FrameDemandeur frame;
+=======
+    private Frame frame;
+>>>>>>> Stashed changes
     private User user;
+    private static final Scanner scanner = new Scanner(System.in); // Scanner unique pour toute la classe
 
     public Application() {
+<<<<<<< Updated upstream
 
         String TypeUser = getText("Demandeur, validateur ou benevole ?");
 
@@ -24,62 +30,48 @@ public class Application {
             user= CreateValidateur();
 
         }else {
+=======
+        frame = new Frame();
+        String typeUser = getText("Demandeur, validateur ou benevole ?");
+
+        if (typeUser.equalsIgnoreCase("demandeur")) {
+            user = demandeur;
+        } else if (typeUser.equalsIgnoreCase("benevole")) {
+            user = createBenevole();
+        } else if (typeUser.equalsIgnoreCase("validateur")) {
+           // user = createValidateur();
+        } else {
+>>>>>>> Stashed changes
             System.out.println("L'utilisateur n'est ni un Demandeur ni un Benevole.");
         }
-
-
-
-
-    }
-
-    private Demandeur CreateDemandeur() {
-
-        String Nom = getText("Quel est ton nom ?") ;
-        String Prenom = getText("Quel est ton Prenom ?") ;
-        String description = getText("Décris toi en quelques lignes") ;
-        String needs = getText("De quoi as-tu besoin ?") ;
-        String location =getText("où habites tu ?") ;
-        String email = getText("ton mail ? ") ;
-        String password = getText("ur password ?") ;
-
-
-        Demandeur demandeur = new Demandeur(Nom,Prenom,description,needs,location,email,password);
-        return demandeur;
-    }
-    private Benevole CreateBenevole() {
-
-        String Nom = getText("Quel est ton nom ?") ;
-        String Prenom = getText("Quel est ton Prenom ?") ;
-        String email = getText("ton mail ? ") ;
-        String password = getText("ur password ?") ;
-
-
-        Benevole benevole = new Benevole(Nom,Prenom,email,password);
-        return benevole;
-    }
-    private Validateur CreateValidateur() {
-
-        String Nom = getText("Quel est ton nom ?") ;
-        String Prenom = getText("Quel est ton Prenom ?") ;
-        String email = getText("ton mail ? ") ;
-        String password = getText("ur password ?") ;
-
-        Validateur validateur = new Validateur(Nom,Prenom,email,password);
-        return validateur;
     }
 
 
+        // Exemple de création de Demandeur
+        Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Ménage", Place.HOME, "alice@example.com", "password123");
 
+
+    private Benevole createBenevole() {
+        String nom = getText("Quel est ton nom ? ");
+        String prenom = getText("Quel est ton Prenom ? ");
+        String email = getText("Ton mail ? ");
+        String password = getText("Ton mot de passe ? ");
+        String metier = getText("Quel est ton métier ? ");
+        return new Benevole(nom, prenom, email, password,metier);
+    }
+
+    /*private Validateur createValidateur() {
+        String nom = getText("Quel est ton nom ? ");
+        String prenom = getText("Quel est ton Prenom ? ");
+        String email = getText("Ton mail ? ");
+        String password = getText("Ton mot de passe ? ");
+
+        Validateur validateur = new Validateur(nom, prenom, email, password);
+        return *validateur;
+    }*/
 
     private String getText(String text) {
-
-        Scanner scanner = new Scanner(System.in);
         System.out.print(text);
-        String UserText = scanner.nextLine(); // Lire la ligne de texte saisie par l'utilisateur
-        scanner.close();
-        return UserText ;
-
-
-
+        return scanner.nextLine(); // Lire la ligne de texte saisie par l'utilisateur
     }
 }

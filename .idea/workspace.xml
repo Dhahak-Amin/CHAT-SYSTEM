@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aff28f5a-7cca-4153-b19a-2cdf8758afd5" name="Changes" comment="">
+<<<<<<< Updated upstream
       <change afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/FrameBenevole.java" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+>>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/AllMissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/AllMissions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Application.java" afterDir="false" />
@@ -13,14 +17,27 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Frame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/FrameDemandeur.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Mission.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Mission.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Place.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Place.java" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.java" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Validateur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Validateur.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/UserServiceTest.java" afterDir="false" />
+>>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/AllMissions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/AllMissions.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Application.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Benevole.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Benevole.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Demandeur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Demandeur.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Frame$1.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Frame.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Mission.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Mission.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Place.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Place.class" afterDir="false" />
+<<<<<<< Updated upstream
+=======
+      <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Validateur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Validateur.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/UserServiceTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/UserServiceTest.class" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,8 +55,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
@@ -55,7 +82,12 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+<<<<<<< Updated upstream
     &quot;last_opened_file_path&quot;: &quot;/home/boaglio/Bureau/chatsystem-dhahak-boaglio&quot;
+=======
+    &quot;last_opened_file_path&quot;: &quot;/home/boaglio/Bureau/CHAT-SYSTEM&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+>>>>>>> Stashed changes
   }
 }</component>
   <component name="RunManager">
@@ -87,21 +119,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserServiceAuthTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="demoMavenProject" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="fr.insa.maven.demo.demoMavenProject.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="fr.insa.maven.demo.demoMavenProject" />
-      <option name="MAIN_CLASS_NAME" value="fr.insa.maven.demo.demoMavenProject.UserServiceAuthTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="UserServiceUpdateTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="demoMavenProject" />
       <extension name="coverage">
@@ -114,6 +131,54 @@
       <option name="MAIN_CLASS_NAME" value="fr.insa.maven.demo.demoMavenProject.UserServiceUpdateTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ValidateurTest.testValiderMissionAvecBenevoleDisponible" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="demoMavenProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="fr.insa.maven.demo.demoMavenProject.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="fr.insa.maven.demo.demoMavenProject" />
+      <option name="MAIN_CLASS_NAME" value="fr.insa.maven.demo.demoMavenProject.ValidateurTest" />
+      <option name="METHOD_NAME" value="testValiderMissionAvecBenevoleDisponible" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ValidateurTest.testValiderMissionAvecBenevoleSansMetierCorrespondant" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="demoMavenProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="fr.insa.maven.demo.demoMavenProject.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="fr.insa.maven.demo.demoMavenProject" />
+      <option name="MAIN_CLASS_NAME" value="fr.insa.maven.demo.demoMavenProject.ValidateurTest" />
+      <option name="METHOD_NAME" value="testValiderMissionAvecBenevoleSansMetierCorrespondant" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ValidateurTest.testValiderMissionSansBenevoleDisponible" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="demoMavenProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="fr.insa.maven.demo.demoMavenProject.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="fr.insa.maven.demo.demoMavenProject" />
+      <option name="MAIN_CLASS_NAME" value="fr.insa.maven.demo.demoMavenProject.ValidateurTest" />
+      <option name="METHOD_NAME" value="testValiderMissionSansBenevoleDisponible" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -131,9 +196,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ValidateurTest.testValiderMissionAvecBenevoleDisponible" />
+        <item itemvalue="JUnit.ValidateurTest.testValiderMissionAvecBenevoleSansMetierCorrespondant" />
+        <item itemvalue="JUnit.ValidateurTest.testValiderMissionSansBenevoleDisponible" />
         <item itemvalue="JUnit.AllMissionsTest" />
         <item itemvalue="JUnit.UserServiceUpdateTest" />
-        <item itemvalue="JUnit.UserServiceAuthTest" />
       </list>
     </recent_temporary>
   </component>

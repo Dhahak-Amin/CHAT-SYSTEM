@@ -1,9 +1,6 @@
 package fr.insa.maven.demo.demoMavenProject;
-import java.util.Scanner;
-public class Mission {
-    private String etat;
 
-
+<<<<<<< Updated upstream
 
     private Benevole benevole ;
     private Place place ;
@@ -15,39 +12,32 @@ public class Mission {
         this.place=place ;
         this.intitule = intitule;
         this.demandeur = demandeur;
-    }
+=======
+public class Mission {
+    private String intitule;
+    private Place place;
+    private MissionEtat etat;
+    private Demandeur user;
+    private Benevole benevole;
 
-    // Getter pour 'etat'
-    public String getEtat() {
-        return etat;
-    }
-
-    // Setter pour 'etat'
-
-
-    public void setEtat(String etat) {
+    // Constructeur
+    public Mission(String intitule, Place place, MissionEtat etat, Demandeur user) {
+        this.intitule = intitule;
+        this.place = place;
         this.etat = etat;
+        this.user = user;
+>>>>>>> Stashed changes
     }
 
-    // Getter pour 'intitule'
+    // Getters et Setters
     public String getIntitule() {
         return intitule;
     }
 
-    // Setter pour 'intitule'
     public void setIntitule(String intitule) {
         this.intitule = intitule;
     }
 
-    // Getter pour 'demandeur'
-    public Demandeur getDemandeur() {
-        return demandeur;
-    }
-
-    // Setter pour 'demandeur'
-    public void setDemandeur(Demandeur demandeur) {
-        this.demandeur = demandeur;
-    }
     public Place getPlace() {
         return place;
     }
@@ -56,6 +46,38 @@ public class Mission {
         this.place = place;
     }
 
+    public MissionEtat getEtat() {
+        return etat;
+    }
+
+    public void setEtat(MissionEtat etat) {
+        this.etat = etat;
+    }
+
+<<<<<<< Updated upstream
+    // Getter pour 'demandeur'
+    public Demandeur getDemandeur() {
+        return demandeur;
+    }
+
+    // Setter pour 'demandeur'
+    public void setDemandeur(Demandeur demandeur) {
+        this.demandeur = demandeur;
+=======
+    public Demandeur getUser() {
+        return user;
+    }
+
+    public void setUser(Demandeur user) {
+        this.user = user;
+>>>>>>> Stashed changes
+    }
+
+    public Benevole getBenevole() {
+        return benevole;
+    }
+
+<<<<<<< Updated upstream
     public Benevole getBenevole() {
         return benevole;
     }
@@ -64,4 +86,9 @@ public class Mission {
         this.benevole = benevole;
     }
 
+=======
+    public void setBenevole(Benevole benevole) {
+        this.benevole = benevole;
+    }
+>>>>>>> Stashed changes
 }

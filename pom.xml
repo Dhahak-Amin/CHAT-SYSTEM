@@ -1,30 +1,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-	https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.insa.maven.demo</groupId>
 	<artifactId>demoMavenProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
 	<properties>
-		<maven.compiler.source>23</maven.compiler.source>
-		<maven.compiler.target>23</maven.compiler.target>
+		<!-- Ajustez la version de Java à celle installée sur votre système -->
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.release>17</maven.compiler.release>
 	</properties>
+
 	<dependencies>
+		<!-- Dépendance pour JUnit -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>5.10.0</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Dépendance pour MySQL -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.33</version> <!-- Replace with the latest version if needed -->
+			<version>8.0.33</version>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
+			<!-- Plugin pour la compilation -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+
+			<!-- Plugin pour créer un fichier JAR -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -32,7 +51,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>fr.pdla.demo.HelloClass</mainClass>
+							<mainClass>fr.insa.maven.demo.demoMavenProject.Main</mainClass> <!-- Remplacez par votre classe principale -->
 						</manifest>
 					</archive>
 				</configuration>

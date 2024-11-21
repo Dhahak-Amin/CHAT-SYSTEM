@@ -44,7 +44,7 @@ class ValidateurTest {
         }
 
         // Initialisation des entités
-        validateur = new Validateur("Ali", "pope", "tsahawasasas@example.com", "password123", conn);
+        validateur = new Validateur("Ali", "pope", "tsahawasasas6568@example.com", "password123", conn);
         demandeur = new Demandeur(
                 "Amine",
                 "Dupont",

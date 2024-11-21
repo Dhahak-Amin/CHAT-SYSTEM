@@ -21,7 +21,7 @@ class AllMissionsTest {
 
     @Test
     void testAddMission() {
-        mission = new Mission("En attente", "Demande d'aide au jardinage", demandeur, Place.HOME);
+        mission = new Mission(MissionEtat.INVALIDE, "Demande d'aide au jardinage", demandeur, Place.HOME);
         allMissions.addMission(mission);
 
         assertEquals(1, allMissions.countMissions());
@@ -30,7 +30,7 @@ class AllMissionsTest {
 
     @Test
     void testRemoveMission() {
-        mission = new Mission("En attente", "Demande d'aide au jardinage", demandeur, Place.HOME);
+        mission = new Mission(MissionEtat.EN_COURS, "Demande d'aide au jardinage", demandeur, Place.HOME);
         allMissions.addMission(mission);
         assertTrue(allMissions.removeMission("Demande d'aide au jardinage"));
         assertNull(allMissions.findMission("Demande d'aide au jardinage"));
@@ -39,9 +39,9 @@ class AllMissionsTest {
 
     @Test
     void testUpdateMission() {
-        mission = new Mission("En attente", "Demande d'aide au jardinage", demandeur,Place.HOME);
+        mission = new Mission(MissionEtat.EN_COURS, "Demande d'aide au jardinage", demandeur,Place.HOME);
         allMissions.addMission(mission);
-        assertTrue(allMissions.updateMission("Demande d'aide au jardinage", "En cours", "Aide jardinage", demandeur));
+        assertTrue(allMissions.updateMission("Demande d'aide au jardinage", MissionEtat.EN_COURS, "Aide jardinage", demandeur));
 
         Mission updatedMission = allMissions.findMission("Aide jardinage");
         assertNotNull(updatedMission);
@@ -51,7 +51,7 @@ class AllMissionsTest {
 
     @Test
     void testFindMission() {
-        mission = new Mission("En attente", "Demande d'aide au jardinage", demandeur,Place.HOME);
+        mission = new Mission(MissionEtat.TERMINEE, "Demande d'aide au jardinage", demandeur,Place.HOME);
         allMissions.addMission(mission);
         assertNotNull(allMissions.findMission("Demande d'aide au jardinage"));
         assertNull(allMissions.findMission("Mission inconnue"));
@@ -59,7 +59,7 @@ class AllMissionsTest {
 
     @Test
     void testClearMissions() {
-        mission = new Mission("En attente", "Demande d'aide au jardinage", demandeur,Place.HOME);
+        mission = new Mission(MissionEtat.VALIDEE, "Demande d'aide au jardinage", demandeur,Place.HOME);
         allMissions.addMission(mission);
         allMissions.clearMissions();
         assertEquals(0, allMissions.countMissions());

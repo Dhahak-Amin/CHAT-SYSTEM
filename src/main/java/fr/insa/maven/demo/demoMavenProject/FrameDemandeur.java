@@ -131,9 +131,9 @@ public class FrameDemandeur extends JFrame {
         @Override
         public Component getListCellRendererComponent(JList<? extends Mission> list, Mission mission, int index, boolean isSelected, boolean cellHasFocus) {
             Demandeur demandeur = mission.getDemandeur();
-            // Affichage du numéro de la mission (index + 1) avant l'intitulé
-            String missionDetails = (index + 1) + ". " + mission.getIntitule() + " - " + mission.getPlace().name() ;
-
+            String missionDetails = (index + 1) + ". " + mission.getIntitule() + " - " + mission.getPlace().name()
+                    + " - " + demandeur.getFirstname() + " " + demandeur.getLastname()
+                    + " - État : " + mission.getEtat();
             missionLabel.setText(missionDetails);
 
             // Appliquer une couleur de fond si sélectionnée
@@ -149,15 +149,14 @@ public class FrameDemandeur extends JFrame {
         }
     }
 
-
     public static void main(String[] args) {
         Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", "Paris", "alice@example.com", "password123");
         AllMissions allMissions = new AllMissions();
-        Mission mission1 = new Mission("En cours", "Aide aux courses", demandeur, Place.HOME);
-        Mission mission2 = new Mission("En attente", "Nettoyage de jardin", demandeur, Place.WORKPLACE);
-        Mission mission3 = new Mission("Complétée", "Déménagement", demandeur, Place.HOME);
-        Mission mission4 = new Mission("Annulée", "Réparation d'appareils", demandeur, Place.HOSPITAL);
-        Mission mission5 = new Mission("En cours", "Garde d'enfants", demandeur, Place.EHPAD);
+        Mission mission1 = new Mission("jardin",  demandeur, Place.HOME);
+        Mission mission2 = new Mission("piscine",  demandeur, Place.WORKPLACE);
+        Mission mission3 = new Mission("canapé",  demandeur, Place.HOME);
+        Mission mission4 = new Mission("bobo",  demandeur, Place.HOSPITAL);
+        Mission mission5 = new Mission("mamie",  demandeur, Place.EHPAD);
 
 // Ajout des missions à la liste des missions
         allMissions.addMission(mission1);
@@ -165,6 +164,7 @@ public class FrameDemandeur extends JFrame {
         allMissions.addMission(mission3);
         allMissions.addMission(mission4);
         allMissions.addMission(mission5);
+        demandeur.setMissions(allMissions);
 
 
         SwingUtilities.invokeLater(() -> {

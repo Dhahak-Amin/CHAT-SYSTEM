@@ -22,7 +22,7 @@ public class AllMissions {
     }
 
     // Method to update a mission's details
-    public boolean updateMission(String intitule, String newEtat, String newIntitule, Demandeur demandeur) {
+    public boolean updateMission(String intitule, MissionEtat newEtat, String newIntitule, Demandeur demandeur) {
         for (Mission mission : missions) {
             if (mission.getIntitule().equals(intitule)) {
                 mission.setEtat(newEtat);
@@ -36,7 +36,7 @@ public class AllMissions {
 
     // Method to retrieve the list of missions
     public List<Mission> getMissions() {
-        return new ArrayList<>(missions); // Return a copy to prevent external modification
+        return missions; // Return a copy to prevent external modification
     }
 
     // Method to find a mission by its intitule

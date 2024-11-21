@@ -3,17 +3,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Benevole extends User {
-    private List<Mission> acceptedMissions;
+    private FrameBenevole frameBenevole ;
+
+
+
+    private AllMissions acceptedMissions;
 
     public Benevole(String firstname, String lastname, String email, String password) {
         super(firstname, lastname, email, password);
-        this.acceptedMissions = new ArrayList<>();
+        this.acceptedMissions = new AllMissions();
+        this.frameBenevole= new FrameBenevole(this.acceptedMissions,this);
     }
 
     // Method for the volunteer to accept a mission
     public void acceptMission(Mission mission) {
-        if (mission != null && !acceptedMissions.contains(mission)) {
-            acceptedMissions.add(mission);
+        if (mission != null ) {
+            acceptedMissions.addMission(mission);
             System.out.println("Mission accepted: " + mission.getIntitule());
         } else {
             System.out.println("Mission is already accepted or is null.");
@@ -21,10 +26,12 @@ public class Benevole extends User {
     }
 
     // Method to list all accepted missions
-    public List<Mission> getAcceptedMissions() {
+    public AllMissions getAcceptedMissions() {
         return acceptedMissions;
     }
-
+    public void setAcceptedMissions(AllMissions acceptedMissions) {
+        this.acceptedMissions = acceptedMissions;
+    }
 
 
 

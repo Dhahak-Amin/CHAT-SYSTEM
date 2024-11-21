@@ -8,11 +8,27 @@ public class Demandeur extends User {
     private String needs;
     private String location;
 
+
+
+    private AllMissions Mymissions;
+
+    private FrameDemandeur frameDemandeur;
+
+
     public Demandeur(String firstname, String lastname, String description, String needs, String location, String email, String password) {
         super(firstname, lastname,email,password);
         this.description = description;
         this.needs = needs;
         this.location = location;
+
+    }
+
+    public Demandeur(String firstname, String lastname, String description, String needs, String location, String email, String password, AllMissions missions) {
+        super(firstname, lastname,email,password);
+        this.description = description;
+        this.needs = needs;
+        this.location = location;
+        this.Mymissions=missions;
     }
 
     // Getters and setters
@@ -23,7 +39,7 @@ public class Demandeur extends User {
     public Mission createMission(String intitule , Place place) {
 
             // Création d'une nouvelle mission
-            Mission mission= new Mission("En attente", intitule,this, place );
+            Mission mission= new Mission("En attente", this, place );
             return mission; // Retourner la mission créée
         }
 
@@ -68,6 +84,14 @@ public class Demandeur extends User {
         return location;
     }
 
+    public AllMissions getMissions() {
+        return Mymissions;
+    }
+
+    public void setMissions(AllMissions missions) {
+        this.Mymissions = missions;
+    }
+
     private String getText(String text) {
 
         Scanner scanner = new Scanner(System.in);
@@ -83,8 +107,8 @@ public class Demandeur extends User {
     public void setLocation(String location) {
         this.location = location;
     }
-    
-    
-    
+
+
+
     
 }

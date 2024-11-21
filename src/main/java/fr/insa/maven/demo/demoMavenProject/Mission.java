@@ -1,7 +1,7 @@
 package fr.insa.maven.demo.demoMavenProject;
 import java.util.Scanner;
 public class Mission {
-    private String etat;
+    private MissionEtat etat;
 
 
 
@@ -10,7 +10,13 @@ public class Mission {
     private String intitule;
     private Demandeur demandeur; // Attribut de type Demandeur
 
-    public Mission(String etat, String intitule, Demandeur demandeur, Place place) {
+    public Mission(String intitule, Demandeur demandeur, Place place) {
+        this.etat = MissionEtat.EN_ATTENTE_AFFECTATION;
+        this.place=place ;
+        this.intitule = intitule;
+        this.demandeur = demandeur;
+    }
+    public Mission( MissionEtat etat ,String intitule, Demandeur demandeur, Place place) {
         this.etat = etat;
         this.place=place ;
         this.intitule = intitule;
@@ -18,14 +24,14 @@ public class Mission {
     }
 
     // Getter pour 'etat'
-    public String getEtat() {
+    public MissionEtat getEtat() {
         return etat;
     }
 
     // Setter pour 'etat'
 
 
-    public void setEtat(String etat) {
+    public void setEtat(MissionEtat etat) {
         this.etat = etat;
     }
 

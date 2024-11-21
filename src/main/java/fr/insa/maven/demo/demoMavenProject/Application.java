@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Application {
 
 
-    private Frame frame;
+    private FrameDemandeur frame;
     private User user;
 
     public Application() {

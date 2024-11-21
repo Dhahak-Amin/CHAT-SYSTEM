@@ -20,17 +20,15 @@ public class Demandeur extends User {
         return description;
     }
 
-    private Mission createMission() {
+    public Mission createMission(String intitule , Place place) {
 
-            String intitule = getText("Quel est ta demande");
-            Place place = choosePlace();
             // Création d'une nouvelle mission
             Mission mission= new Mission("En attente", intitule,this, place );
             return mission; // Retourner la mission créée
         }
 
 
-    public Place choosePlace() {
+    private Place choosePlace() {
         Scanner scanner = new Scanner(System.in);
         Place[] places = Place.values();
 

@@ -41,12 +41,12 @@ class AllMissionsTest {
     void testUpdateMission() {
         mission = new Mission("En attente", "Demande d'aide au jardinage", demandeur,Place.HOME);
         allMissions.addMission(mission);
-        assertTrue(allMissions.updateMission("Demande d'aide au jardinage", "En cours", "Aide jardinage", benevole));
+        assertTrue(allMissions.updateMission("Demande d'aide au jardinage", "En cours", "Aide jardinage", demandeur));
 
         Mission updatedMission = allMissions.findMission("Aide jardinage");
         assertNotNull(updatedMission);
         assertEquals("En cours", updatedMission.getEtat());
-        assertEquals(benevole, updatedMission.getUser());
+        assertEquals(benevole, updatedMission.getDemandeur());
     }
 
     @Test

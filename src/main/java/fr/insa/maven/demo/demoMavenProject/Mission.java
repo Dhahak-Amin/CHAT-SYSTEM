@@ -4,15 +4,17 @@ public class Mission {
     private String etat;
 
 
+
+    private Benevole benevole ;
     private Place place ;
     private String intitule;
-    private User user; // Attribut de type Demandeur
+    private Demandeur demandeur; // Attribut de type Demandeur
 
-    public Mission(String etat, String intitule, User user, Place place) {
+    public Mission(String etat, String intitule, Demandeur demandeur, Place place) {
         this.etat = etat;
         this.place=place ;
         this.intitule = intitule;
-        this.user = user;
+        this.demandeur = demandeur;
     }
 
     // Getter pour 'etat'
@@ -38,13 +40,13 @@ public class Mission {
     }
 
     // Getter pour 'demandeur'
-    public User getUser() {
-        return user;
+    public Demandeur getDemandeur() {
+        return demandeur;
     }
 
     // Setter pour 'demandeur'
-    public void setUser(User user) {
-        this.user = user;
+    public void setDemandeur(Demandeur demandeur) {
+        this.demandeur = demandeur;
     }
     public Place getPlace() {
         return place;
@@ -52,6 +54,14 @@ public class Mission {
 
     public void setPlace(Place place) {
         this.place = place;
+    }
+
+    public Benevole getBenevole() {
+        return benevole;
+    }
+
+    public void setBenevole(Benevole benevole) {
+        this.benevole = benevole;
     }
 
 }

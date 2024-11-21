@@ -71,6 +71,10 @@ public class FrameDemandeur extends JFrame {
             missionListModel.addElement(mission); // Ajouter chaque mission au modèle
         }
     }
+    // Ajout dans la classe FrameDemandeur
+    public DefaultListModel<Mission> getMissionListModel() {
+        return missionListModel;
+    }
 
     // Méthode pour ajouter une nouvelle mission
     private void addMission() {
@@ -150,7 +154,7 @@ public class FrameDemandeur extends JFrame {
     }
 
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", "Paris", "alice@example.com", "password123");
         AllMissions allMissions = new AllMissions();
         Mission mission1 = new Mission("En cours", "Aide aux courses", demandeur, Place.HOME);
@@ -172,4 +176,6 @@ public class FrameDemandeur extends JFrame {
             frame.setVisible(true);
         });
     }
+
+    */
 }

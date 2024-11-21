@@ -31,16 +31,22 @@ public class AllMissionsTest {
             clearMissionTable.executeUpdate();
         }
 
-        // Nettoyer la table Demandeur avant chaque test pour s'assurer que les données sont propres
+        // Nettoyer la table Demandeur avant chaque test
         try (PreparedStatement clearDemandeurTable = conn.prepareStatement("DELETE FROM Demandeur")) {
             clearDemandeurTable.executeUpdate();
         }
 
         // Initialiser AllMissions et un objet Demandeur
         allMissions = new AllMissions();
-
-        // Instanciation de Demandeur avec les paramètres correspondant à la structure de la table
-        demandeur = new Demandeur("Alice", "Dupont", "Besoin d'une aide pour le ménage", "Ménage", Place.HOME, "alice@example.com", "password123");
+        demandeur = new Demandeur(
+                "Alice",
+                "Dupont",
+                "Besoin d'une aide pour le ménage",
+                "Ménage",
+                Place.HOME,
+                "alice@example.com",
+                "password123"
+        );
 
         // Insérer le demandeur dans la base de données
         try (PreparedStatement insertDemandeurStmt = conn.prepareStatement(
@@ -52,7 +58,7 @@ public class AllMissionsTest {
             insertDemandeurStmt.setString(4, demandeur.getPassword());
             insertDemandeurStmt.setString(5, demandeur.getDescription());
             insertDemandeurStmt.setString(6, demandeur.getNeeds());
-            insertDemandeurStmt.setObject(7, demandeur.getLocation().name()); // Pour l'énumération
+            insertDemandeurStmt.setString(7, demandeur.getLocation().name()); // Pour l'énumération
             insertDemandeurStmt.executeUpdate();
         }
     }
@@ -60,7 +66,12 @@ public class AllMissionsTest {
     @Test
     public void testAddMission() {
         // Ajouter une mission
-        mission = new Mission("Simple Mission", Place.HOME, MissionEtat.EN_ATTENTE_AFFECTATION, demandeur);
+        mission = new Mission(
+                MissionEtat.EN_ATTENTE_AFFECTATION,
+                "Simple Mission",
+                demandeur,
+                Place.HOME
+        );
         allMissions.addMission(mission);
 
         // Vérifier que la mission a été ajoutée
@@ -70,27 +81,28 @@ public class AllMissionsTest {
     @Test
     public void testFindMission() {
         // Ajouter une mission et la rechercher
-        mission = new Mission("Simple Mission", Place.HOME, MissionEtat.EN_ATTENTE_AFFECTATION, demandeur);
+        mission = new Mission(
+                MissionEtat.EN_ATTENTE_AFFECTATION,
+                "Simple Mission",
+                demandeur,
+                Place.HOME
+        );
         allMissions.addMission(mission);
-<<<<<<< Updated upstream
-        assertTrue(allMissions.updateMission("Demande d'aide au jardinage", "En cours", "Aide jardinage", demandeur));
-
-        Mission updatedMission = allMissions.findMission("Aide jardinage");
-        assertNotNull(updatedMission);
-        assertEquals("En cours", updatedMission.getEtat());
-        assertEquals(benevole, updatedMission.getDemandeur());
-=======
 
         Mission foundMission = allMissions.findMission("Simple Mission");
         assertNotNull(foundMission, "La mission ajoutée devrait être trouvée.");
-        assertEquals(MissionEtat.EN_ATTENTE_AFFECTATION, foundMission.getEtat(), "L'état de la mission devrait être EN_ATTENTE_AFFECTATION.");
->>>>>>> Stashed changes
+        assertEquals(MissionEtat.EN_ATTENTE_AFFECTATION, foundMission.getEtat(), "L'état de la mission devrait être EN_ATTENTE.");
     }
 
-  /*  @Test
+    @Test
     public void testRemoveMission() {
         // Ajouter une mission, puis la supprimer
-        mission = new Mission("Simple Mission", Place.HOME, MissionEtat.EN_ATTENTE_AFFECTATION, demandeur);
+        mission = new Mission(
+                MissionEtat.EN_ATTENTE_AFFECTATION,
+                "Simple Mission",
+                demandeur,
+                Place.HOME
+        );
         allMissions.addMission(mission);
         boolean removed = allMissions.removeMission("Simple Mission");
 
@@ -99,5 +111,28 @@ public class AllMissionsTest {
         assertEquals(0, allMissions.countMissions(), "Le nombre de missions devrait être 0 après la suppression.");
     }
 
-   */
+    @Test
+    public void testUpdateMission() {
+        // Ajouter une mission, puis la mettre à jour
+        mission = new Mission(
+                MissionEtat.EN_ATTENTE_AFFECTATION,
+                "Simple Mission",
+                demandeur,
+                Place.HOME
+        );
+        allMissions.addMission(mission);
+
+        boolean updated = allMissions.updateMission(
+                "Simple Mission",
+                "EN_COURS",
+                "Updated Mission",
+                demandeur
+        );
+
+        // Vérifier que la mission a été mise à jour
+        assertTrue(updated, "La mission devrait être mise à jour.");
+        Mission updatedMission = allMissions.findMission("Updated Mission");
+        assertNotNull(updatedMission, "La mission mise à jour devrait être trouvée.");
+        assertEquals(MissionEtat.EN_COURS, updatedMission.getEtat(), "L'état de la mission devrait être EN_COURS.");
+    }
 }

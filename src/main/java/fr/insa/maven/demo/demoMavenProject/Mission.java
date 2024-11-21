@@ -1,32 +1,18 @@
 package fr.insa.maven.demo.demoMavenProject;
 
-<<<<<<< Updated upstream
-
-    private Benevole benevole ;
-    private Place place ;
-    private String intitule;
-    private Demandeur demandeur; // Attribut de type Demandeur
-
-    public Mission(String etat, String intitule, Demandeur demandeur, Place place) {
-        this.etat = etat;
-        this.place=place ;
-        this.intitule = intitule;
-        this.demandeur = demandeur;
-=======
 public class Mission {
-    private String intitule;
+    private Benevole benevole;
     private Place place;
     private MissionEtat etat;
-    private Demandeur user;
-    private Benevole benevole;
+    private String intitule;
+    private Demandeur demandeur;
 
     // Constructeur
-    public Mission(String intitule, Place place, MissionEtat etat, Demandeur user) {
-        this.intitule = intitule;
-        this.place = place;
+    public Mission(MissionEtat etat, String intitule, Demandeur demandeur, Place place) {
         this.etat = etat;
-        this.user = user;
->>>>>>> Stashed changes
+        this.place = place;
+        this.intitule = intitule;
+        this.demandeur = demandeur;
     }
 
     // Getters et Setters
@@ -54,30 +40,14 @@ public class Mission {
         this.etat = etat;
     }
 
-<<<<<<< Updated upstream
-    // Getter pour 'demandeur'
     public Demandeur getDemandeur() {
         return demandeur;
     }
 
-    // Setter pour 'demandeur'
     public void setDemandeur(Demandeur demandeur) {
         this.demandeur = demandeur;
-=======
-    public Demandeur getUser() {
-        return user;
     }
 
-    public void setUser(Demandeur user) {
-        this.user = user;
->>>>>>> Stashed changes
-    }
-
-    public Benevole getBenevole() {
-        return benevole;
-    }
-
-<<<<<<< Updated upstream
     public Benevole getBenevole() {
         return benevole;
     }
@@ -85,10 +55,4 @@ public class Mission {
     public void setBenevole(Benevole benevole) {
         this.benevole = benevole;
     }
-
-=======
-    public void setBenevole(Benevole benevole) {
-        this.benevole = benevole;
-    }
->>>>>>> Stashed changes
 }

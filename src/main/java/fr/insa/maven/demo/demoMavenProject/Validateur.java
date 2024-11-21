@@ -54,7 +54,7 @@ public class Validateur extends User {
             stmt.setString(1, mission.getIntitule());
             stmt.setString(2, mission.getPlace().name());
             stmt.setString(3, mission.getEtat().name());
-            stmt.setString(4, mission.getUser().getEmail()); // Assurez-vous que l'email du demandeur est utilisé
+            stmt.setString(4, mission.getDemandeur().getEmail()); // Assurez-vous que l'email du demandeur est utilisé
             stmt.setString(5, mission.getBenevole() != null ? mission.getBenevole().getEmail() : null); // Insérez l'email du bénévole
             stmt.executeUpdate();
         } catch (SQLException e) {

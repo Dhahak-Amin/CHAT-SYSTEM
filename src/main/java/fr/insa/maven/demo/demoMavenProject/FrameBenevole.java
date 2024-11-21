@@ -78,7 +78,7 @@ public class FrameBenevole extends JFrame {
 
             if (newStatus != null && !newStatus.trim().isEmpty()) {
                 // Modifier le statut de la mission
-                selectedMission.setEtat(newStatus);
+              //  selectedMission.setEtat(newStatus);
                 updateMissionList(); // Mettre à jour la liste affichée
             } else {
                 JOptionPane.showMessageDialog(this, "Statut invalide ou sélection annulée.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -116,7 +116,12 @@ public class FrameBenevole extends JFrame {
             return this;
         }
     }
+    // Ajout dans la classe FrameBenevole
+    public DefaultListModel<Mission> getMissionListModel() {
+        return missionListModel;
+    }
 
+/*
     public static void main(String[] args) {
         // Création de l'objet AllMissions
         AllMissions allMissions = new AllMissions();
@@ -143,4 +148,7 @@ public class FrameBenevole extends JFrame {
             frame.setVisible(true);
         });
     }
+
+*/
+
 }

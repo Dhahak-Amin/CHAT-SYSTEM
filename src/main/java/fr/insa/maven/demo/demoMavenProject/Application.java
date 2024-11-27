@@ -5,7 +5,11 @@ import java.util.Scanner;
 public class Application {
 
 
+
     private FrameDemandeur frame;
+
+
+
     private User user;
 
     public Application() {
@@ -67,8 +71,21 @@ public class Application {
         Validateur validateur = new Validateur(Nom,Prenom,email,password);
         return validateur;
     }
+  /*  private Mission createMission(User user) {
+        if (user instanceof Demandeur) {
+            String intitule = getText("Quel est ta demande");
+            // Création d'une nouvelle mission
+            Mission mission = new Mission( intitule, user);
+            return mission; // Retourner la mission créée
+        } else {
+            // Gérer le cas où l'utilisateur n'est pas un Demandeur
+            System.out.println("L'utilisateur doit être un Demandeur pour créer une mission.");
+            return null; // Ou lancer une exception selon le contexte
+        }
+    }
 
 
+*/
 
 
     private String getText(String text) {

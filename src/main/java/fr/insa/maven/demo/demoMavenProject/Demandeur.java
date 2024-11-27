@@ -39,7 +39,7 @@ public class Demandeur extends User {
     public Mission createMission(String intitule , Place place) {
 
             // Création d'une nouvelle mission
-            Mission mission= new Mission("En attente", this, place );
+            Mission mission= new Mission(intitule, this, place );
             return mission; // Retourner la mission créée
         }
 

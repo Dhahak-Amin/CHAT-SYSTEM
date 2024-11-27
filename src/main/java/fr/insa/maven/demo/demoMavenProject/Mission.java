@@ -10,18 +10,21 @@ public class Mission {
     private String intitule;
     private Demandeur demandeur; // Attribut de type Demandeur
 
+
     public Mission(String intitule, Demandeur demandeur, Place place) {
         this.etat = MissionEtat.EN_ATTENTE_AFFECTATION;
         this.place=place ;
         this.intitule = intitule;
         this.demandeur = demandeur;
     }
-    public Mission( MissionEtat etat ,String intitule, Demandeur demandeur, Place place) {
+    public Mission(MissionEtat etat,String intitule, Demandeur demandeur, Place place) {
         this.etat = etat;
         this.place=place ;
         this.intitule = intitule;
         this.demandeur = demandeur;
     }
+
+
 
     // Getter pour 'etat'
     public MissionEtat getEtat() {

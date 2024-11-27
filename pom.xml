@@ -1,15 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-	https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.insa.maven.demo</groupId>
 	<artifactId>demoMavenProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -18,13 +20,31 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.10.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.33</version> <!-- Replace with the latest version if needed -->
+			<version>8.0.33</version>
 		</dependency>
+
 	</dependencies>
+
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M7</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -39,4 +59,15 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>test</id>
+			<properties>
+				<db.url>jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012</db.url>
+				<db.user>projet_gei_012</db.user>
+				<db.password>dith1Que</db.password>
+			</properties>
+		</profile>
+	</profiles>
 </project>

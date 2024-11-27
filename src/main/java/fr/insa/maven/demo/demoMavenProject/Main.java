@@ -1,49 +1,107 @@
 package fr.insa.maven.demo.demoMavenProject;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import javax.swing.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        // Connexion à la base de données
-        String dbUrl = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012";  // Remplacer par ton URL de base de données
-        String user = "projet_gei_012";  // Nom d'utilisateur pour la base de données
-        String password = "dith1Que";  // Mot de passe pour la base de données
+        ConnectionManager connectionManager = new ConnectionManager();
+
+        // Sélection du rôle utilisateur
+        String[] roles = {"Bénévole", "Demandeur", "Validateur", "Administrateur"};
+        String selectedRole = (String) JOptionPane.showInputDialog(
+                null,
+                "Choisissez votre rôle :",
+                "Sélection de rôle",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                roles,
+                roles[0]
+        );
+
+        if (selectedRole == null) {
+            JOptionPane.showMessageDialog(null, "Programme terminé.", "Au revoir", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
 
         try {
-            // Établir la connexion
-            Connection conn = DriverManager.getConnection(dbUrl, user, password);
-            System.out.println("Connexion réussie à la base de données.");
+            // Authentification ou enregistrement selon le rôle
+            String email = JOptionPane.showInputDialog("Entrez votre email :");
+            String password = JOptionPane.showInputDialog("Entrez votre mot de passe :");
 
-            // Instancier le service utilisateur
-            UserService userService = new UserService(conn);
+            switch (selectedRole) {
+                case "Bénévole":
+                    connectionManager.authenticateOrRegisterUser(email, password, "benevole");
+                    // L'interface FrameBenevole est déjà gérée dans ConnectionManager
+                    break;
 
-            // Créer un nouvel utilisateur
-            User newUser = new User("John", "Doe", "john.doe@example.com", "password123");
+                case "Demandeur":
+                    connectionManager.authenticateOrRegisterUser(email, password, "demandeur");
+                    // L'interface FrameDemandeur est déjà gérée dans ConnectionManager
+                    break;
 
-            // Enregistrer l'utilisateur dans la base de données
-            userService.registerUser(newUser);
-            System.out.println("Utilisateur enregistré : " + newUser.getFirstname() + " " + newUser.getLastname());
+                case "Validateur":
+                    connectionManager.authenticateOrRegisterUser(email, password, "validateur");
+                    JOptionPane.showMessageDialog(null, "Bienvenue, Validateur ! Fonctionnalité bientôt disponible.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    break;
 
-            // Authentifier l'utilisateur
-            User authenticatedUser = userService.authenticateUser("john.doe@example.com", "password123");
+                case "Administrateur":
+                    launchAdminFrame(connectionManager);
+                    break;
 
-            if (authenticatedUser != null) {
-                System.out.println("Connexion réussie pour " + authenticatedUser.getFirstname() + " " + authenticatedUser.getLastname());
-            } else {
-                System.out.println("Échec de la connexion.");
+                default:
+                    JOptionPane.showMessageDialog(null, "Rôle inconnu.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erreur : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private static void launchAdminFrame(ConnectionManager connectionManager) {
+        String[] actions = {"Gérer les utilisateurs", "Gérer les missions", "Exporter des données", "Se déconnecter"};
+        while (true) {
+            String choice = (String) JOptionPane.showInputDialog(
+                    null,
+                    "Choisissez une action :",
+                    "Menu Administrateur",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    actions,
+                    actions[0]
+            );
+
+            if (choice == null || choice.equals("Se déconnecter")) {
+                JOptionPane.showMessageDialog(null, "Déconnexion réussie. Merci !", "Au revoir", JOptionPane.INFORMATION_MESSAGE);
+                break;
             }
 
-            User updatedUser = new User("John", "Doe", "john.doe@example.com", "newpassword123");
-            userService.updateUser(updatedUser);
+            switch (choice) {
+                case "Gérer les utilisateurs":
+                    JOptionPane.showMessageDialog(null, "Gestion des utilisateurs en cours...", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    // Ajouter le code pour gérer les utilisateurs
+                    break;
 
-            userService.deleteUser("john.doe@example.com");
+                case "Gérer les missions":
+                    JOptionPane.showMessageDialog(null, "Gestion des missions en cours...", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    // Ajouter le code pour gérer les missions
+                    break;
 
+                case "Exporter des données":
+                    String tableName = JOptionPane.showInputDialog("Nom de la table à exporter :");
+                    String filePath = JOptionPane.showInputDialog("Chemin du fichier CSV :");
+                    try {
+                        connectionManager.exportToCSV(tableName, filePath);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Erreur lors de l'exportation : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+                default:
+                    JOptionPane.showMessageDialog(null, "Option inconnue.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    break;
+            }
         }
     }
 }

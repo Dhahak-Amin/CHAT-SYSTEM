@@ -6,70 +6,46 @@ public class Application {
 
 
 
+
     private FrameDemandeur frame;
 
 
 
     private User user;
 
+/*
+    private FrameDemandeur frame; // Supposition que Frame est une classe utilisée pour gérer l'interface
+    private Demandeur demandeur
+    private static final Scanner scanner = new Scanner(System.in); // Scanner unique pour toute la classe
+>>>>>>> d84b19edeb6e937aad110453e26e87d060aa3a4a
+
     public Application() {
+        frame = new FrameDemandeur(AllMissions allMissions, Demandeur demandeur); // Initialisation de l'objet Frame
 
-        String TypeUser = getText("Demandeur, validateur ou benevole ?");
+        String typeUser = getText("Demandeur, validateur ou benevole ?");
 
-
-
-        if (TypeUser.equals("demandeur") || TypeUser.equals("Demandeur")) {
-            user = CreateDemandeur();
-
-        } else if (TypeUser.equals("benevole") || TypeUser.equals("Benevole")) {
-            user= CreateBenevole();
+        if (typeUser.equalsIgnoreCase("demandeur")) {
+            user = createDemandeur();
+        } else if (typeUser.equalsIgnoreCase("benevole")) {
+            user = createBenevole();
+        } else if (typeUser.equalsIgnoreCase("validateur")) {
+            user = createValidateur();
+        } else {
+            System.out.println("L'utilisateur n'est ni un Demandeur, ni un Benevole, ni un Validateur.");
         }
-        else if (TypeUser.equals("Validateur") || TypeUser.equals("validateur")) {
-            user= CreateValidateur();
-
-        }else {
-            System.out.println("L'utilisateur n'est ni un Demandeur ni un Benevole.");
-        }
-
-
-
-
     }
 
-    private Demandeur CreateDemandeur() {
+    // Exemple de création de Demandeur
+    private Demandeur createDemandeur() {
+        String nom = getText("Quel est ton nom ? ");
+        String prenom = getText("Quel est ton prénom ? ");
+        String besoin = getText("Quel est ton besoin ? ");
+        String service = getText("Quel service cherches-tu ? ");
+        String place = getText("Quel est l'emplacement ? (ex: HOME) ");
+        String email = getText("Ton email ? ");
+        String password = getText("Ton mot de passe ? ");
 
-        String Nom = getText("Quel est ton nom ?") ;
-        String Prenom = getText("Quel est ton Prenom ?") ;
-        String description = getText("Décris toi en quelques lignes") ;
-        String needs = getText("De quoi as-tu besoin ?") ;
-        String location =getText("où habites tu ?") ;
-        String email = getText("ton mail ? ") ;
-        String password = getText("ur password ?") ;
-
-
-        Demandeur demandeur = new Demandeur(Nom,Prenom,description,needs,location,email,password);
-        return demandeur;
-    }
-    private Benevole CreateBenevole() {
-
-        String Nom = getText("Quel est ton nom ?") ;
-        String Prenom = getText("Quel est ton Prenom ?") ;
-        String email = getText("ton mail ? ") ;
-        String password = getText("ur password ?") ;
-
-
-        Benevole benevole = new Benevole(Nom,Prenom,email,password);
-        return benevole;
-    }
-    private Validateur CreateValidateur() {
-
-        String Nom = getText("Quel est ton nom ?") ;
-        String Prenom = getText("Quel est ton Prenom ?") ;
-        String email = getText("ton mail ? ") ;
-        String password = getText("ur password ?") ;
-
-        Validateur validateur = new Validateur(Nom,Prenom,email,password);
-        return validateur;
+        return new Demandeur(nom, prenom, besoin, service, Place.valueOf(place.toUpperCase()), email, password);
     }
   /*  private Mission createMission(User user) {
         if (user instanceof Demandeur) {
@@ -84,19 +60,35 @@ public class Application {
         }
     }
 
+    // Exemple de création de Benevole
+    private Benevole createBenevole() {
+        String nom = getText("Quel est ton nom ? ");
+        String prenom = getText("Quel est ton prénom ? ");
+        String email = getText("Ton email ? ");
+        String password = getText("Ton mot de passe ? ");
+        String metier = getText("Quel est ton métier ? ");
 
-*/
-
-
-    private String getText(String text) {
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(text);
-        String UserText = scanner.nextLine(); // Lire la ligne de texte saisie par l'utilisateur
-        scanner.close();
-        return UserText ;
-
-
-
+        return new Benevole(nom, prenom, email, password, metier);
     }
+
+    // Exemple de création de Validateur
+
+
+
+    private Validateur createValidateur() {
+        String nom = getText("Quel est ton nom ? ");
+        String prenom = getText("Quel est ton prénom ? ");
+        String email = getText("Ton email ? ");
+        String password = getText("Ton mot de passe ? ");
+
+        return new Validateur(nom, prenom, email, password);
+    }
+
+    // Méthode pour demander un texte à l'utilisateur
+    private String getText(String text) {
+        System.out.print(text);
+        return scanner.nextLine(); // Lire la ligne de texte saisie par l'utilisateur
+    }
+ */
+
 }

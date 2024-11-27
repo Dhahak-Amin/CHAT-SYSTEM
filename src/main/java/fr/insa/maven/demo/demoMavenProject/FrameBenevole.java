@@ -83,12 +83,16 @@ public class FrameBenevole extends JFrame {
 
             if (newStatus != null) {
                 // Modifier le statut de la mission
+
                 selectedMission.setEtat(newStatus);
 
                 // Si le nouveau statut est "EN_COURS", ajouter la mission à la liste du bénévole
                 if (newStatus == MissionEtat.EN_COURS) {
                     benevole.acceptMission(selectedMission);
                 }
+
+
+              //  selectedMission.setEtat(newStatus);
 
                 updateMissionList(); // Mettre à jour la liste affichée
             } else {
@@ -128,13 +132,18 @@ public class FrameBenevole extends JFrame {
             return this;
         }
     }
+    // Ajout dans la classe FrameBenevole
+    public DefaultListModel<Mission> getMissionListModel() {
+        return missionListModel;
+    }
+
 
     public static void main(String[] args) {
         // Création de l'objet AllMissions
         AllMissions allMissions = new AllMissions();
 
         // Exemple de missions
-        Benevole benevole = new Benevole ("Elian", "Boaglio", "lalalla", "mdp");
+        Benevole benevole = new Benevole ("Elian", "Boaglio", "lalalla", "mdp","agriculteur");
         Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", "Paris", "alice@example.com", "password123");
         Mission mission1 = new Mission(MissionEtat.EN_COURS,"En cours", demandeur, Place.HOME);
         Mission mission2 = new Mission(MissionEtat.INVALIDE,"En attente",  demandeur, Place.WORKPLACE);
@@ -155,4 +164,7 @@ public class FrameBenevole extends JFrame {
             frame.setVisible(true);
         });
     }
+
+
+
 }

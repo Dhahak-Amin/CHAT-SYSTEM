@@ -1,12 +1,12 @@
 package fr.insa.maven.demo.demoMavenProject;
 
-
 import java.util.Scanner;
 
 public class Demandeur extends User {
     private String description;
     private String needs;
-    private String location;
+    private Place location; // Assurez-vous que Place est un enum ou une classe valide
+    private static final Scanner scanner = new Scanner(System.in); // Scanner unique pour toute la classe
 
 
 
@@ -16,14 +16,19 @@ public class Demandeur extends User {
 
 
     public Demandeur(String firstname, String lastname, String description, String needs, String location, String email, String password) {
-        super(firstname, lastname,email,password);
+        super(firstname, lastname, email, password);
+    }
+
+    public Demandeur(String firstname, String lastname, String description, String needs, Place location, String email, String password) {
+        super(firstname, lastname, email, password);
+
         this.description = description;
         this.needs = needs;
         this.location = location;
 
     }
 
-    public Demandeur(String firstname, String lastname, String description, String needs, String location, String email, String password, AllMissions missions) {
+    public Demandeur(String firstname, String lastname, String description, String needs,Place location, String email, String password, AllMissions missions) {
         super(firstname, lastname,email,password);
         this.description = description;
         this.needs = needs;
@@ -31,21 +36,38 @@ public class Demandeur extends User {
         this.Mymissions=missions;
     }
 
-    // Getters and setters
+    // Getters et setters
     public String getDescription() {
         return description;
     }
 
-    public Mission createMission(String intitule , Place place) {
-
-            // Création d'une nouvelle mission
-            Mission mission= new Mission(intitule, this, place );
-            return mission; // Retourner la mission créée
-        }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 
-    private Place choosePlace() {
-        Scanner scanner = new Scanner(System.in);
+
+
+
+
+
+    public Place getLocation() {
+        return location;
+    }
+
+    public void setLocation(Place location) {
+        this.location = location;
+    }
+
+    // Méthode pour créer une mission
+    public Mission createMission(String intitule, Place place) {
+        // Création d'une nouvelle mission
+        Mission mission = new Mission(MissionEtat.EN_ATTENTE_AFFECTATION, intitule, this, place);
+        return mission; // Retourner la mission créée
+    }
+
+    // Méthode pour choisir un lieu
+    public Place choosePlace() {
         Place[] places = Place.values();
 
         System.out.println("Choisissez un endroit pour la mission :");
@@ -68,9 +90,7 @@ public class Demandeur extends User {
 
 
 
-        public void setDescription(String description) {
-        this.description = description;
-    }
+
 
     public String getNeeds() {
         return needs;
@@ -80,9 +100,7 @@ public class Demandeur extends User {
         this.needs = needs;
     }
 
-    public String getLocation() {
-        return location;
-    }
+
 
     public AllMissions getMissions() {
         return Mymissions;
@@ -92,23 +110,18 @@ public class Demandeur extends User {
         this.Mymissions = missions;
     }
 
+
     private String getText(String text) {
-
-        Scanner scanner = new Scanner(System.in);
         System.out.print(text);
-        String UserText = scanner.nextLine(); // Lire la ligne de texte saisie par l'utilisateur
-        scanner.close();
-        return UserText ;
-
-
-
+        scanner.nextLine(); // Consommer la nouvelle ligne restante
+        return scanner.nextLine(); // Lire la ligne de texte saisie par l'utilisateur
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+
+
 
 
 
     
+
 }

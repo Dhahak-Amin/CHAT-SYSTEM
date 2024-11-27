@@ -4,6 +4,4 @@ public enum MissionEtat {
     VALIDEE,               // Mission validée et attribuée
     EN_COURS,              // Mission en cours d'exécution
     TERMINEE,              // Mission terminée
-    INVALIDE;              // Mission invalide
-
-}
+    INVALIDE;     }         // Mission invalide

@@ -10,6 +10,11 @@ public class Benevole extends User {
 
 
 
+    private List<Avis> ListeAvis;
+
+
+    private float moyenne ;
+
     private List<Mission> acceptedMissions;
 
     //private List<Mission> acceptedMissions;
@@ -19,8 +24,9 @@ public class Benevole extends User {
     public Benevole(String firstname, String lastname, String email, String password, String metier) {
         super(firstname, lastname, email, password);
 
-
+        this.ListeAvis = new ArrayList<>();
         this.acceptedMissions = CreateAcceptedMissions(AllMissions.getInstance());
+        this.moyenne = GetMoyenne();
 
         //this.frameBenevole= new FrameBenevole(this.acceptedMissions,this);
 
@@ -79,6 +85,17 @@ public class Benevole extends User {
     // Method to list all accepted missions
 
     // Méthode pour obtenir la liste des missions acceptées
+    public void AddAvis (Avis avis){
+
+            this.ListeAvis.add(avis);
+        }
+
+
+    public List<Avis> getListeAvis() {
+        return ListeAvis;
+    }
+
+
     public List<Mission> getAcceptedMissions() {
 
         return acceptedMissions;
@@ -98,4 +115,36 @@ public class Benevole extends User {
         this.metier = metier;
     }
 
-}
+    public float GetMoyenne() {
+        int total = 0;
+        float res;
+
+
+        for(Avis avis : this.ListeAvis){
+            total+=avis.getNote();
+
+        }
+        if (ListeAvis.isEmpty()){
+            return (float) -1;
+
+        }
+        else {
+        res = (float)total/(float)this.ListeAvis.size();
+        return res;
+        }
+    }
+
+    public String MoyennetoString() {
+        if (moyenne == (float)-1) {
+            return "pas encore de note  ";
+        }else {
+            return Float.toString(GetMoyenne()) + "/5  ";
+            }
+
+
+        }
+            ;
+    }
+
+
+

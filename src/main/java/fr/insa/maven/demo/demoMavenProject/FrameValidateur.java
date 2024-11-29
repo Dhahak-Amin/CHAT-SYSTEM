@@ -81,10 +81,38 @@ public class FrameValidateur extends JFrame {
     private void changeMissionStatus(MissionEtat newStatus) {
         Mission selectedMission = missionList.getSelectedValue();
         if (selectedMission != null) {
+            if (newStatus == MissionEtat.INVALIDE) {
+                // Demander un motif via une boîte de dialogue
+                String motif = JOptionPane.showInputDialog(
+                        this,
+                        "Veuillez fournir un motif pour invalider la mission :",
+                        "Motif d'invalidation",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (motif == null || motif.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                            "L'invalidation nécessite un motif.",
+                            "Erreur",
+                            JOptionPane.WARNING_MESSAGE);
+                    return; // Annuler l'invalidation si aucun motif n'est fourni
+                }
+                Motif mess = new Motif(this.validateur,motif);
+                selectedMission.setMotif(mess);
+                //selectedMission.setMotifInvalidation(motif); // Enregistrer le motif
+            }
+
+            // Modifier le statut de la mission
+
             selectedMission.setEtat(newStatus);
-            //selectedMission.setValidateur(this.validateur);
+
+           // selectedMission.setValidateur(this.validateur);
             allMissions.enregistrerMission2(selectedMission); // Mettre à jour la base de données
-            updateMissionList(); // Mettre à jour l'affichage
+
+            // Mettre à jour l'affichage
+            updateMissionList();
+
+            // Message de confirmation
             JOptionPane.showMessageDialog(this,
                     "La mission a été mise à jour en : " + newStatus,
                     "Mise à jour réussie",
@@ -96,6 +124,7 @@ public class FrameValidateur extends JFrame {
                     JOptionPane.WARNING_MESSAGE);
         }
     }
+
 
     // Renderer pour afficher les détails de la mission
     // Renderer pour afficher les détails de la mission
@@ -112,7 +141,7 @@ public class FrameValidateur extends JFrame {
         public Component getListCellRendererComponent(JList<? extends Mission> list, Mission mission, int index, boolean isSelected, boolean cellHasFocus) {
             String benevoleDetails = getBenevoleDetails(mission.getBenevole()); // Récupérer les infos du bénévole
             String missionDetails = (index + 1) + ". " + mission.getIntitule() + " - " +
-                    mission.getPlace().name() + " - " + mission.getEtat() + " - " + benevoleDetails;
+                    mission.getPlace().name() + " - " + mission.getEtat() + " - " +"-"+mission.getBenevole().MoyennetoString() + benevoleDetails;
 
             missionLabel.setText(missionDetails);
 
@@ -127,6 +156,7 @@ public class FrameValidateur extends JFrame {
             return this;
         }
     }
+
 
 
     // Lancer l'interface

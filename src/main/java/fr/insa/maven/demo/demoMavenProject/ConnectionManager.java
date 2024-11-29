@@ -70,8 +70,12 @@ public class ConnectionManager {
                     if (!isValidateur(email)) {
                         registerValidateur(email, password);
                     }
-                    JOptionPane.showMessageDialog(null, "Bienvenue, Validateur ! Cette fonctionnalité sera bientôt disponible.", "Information", JOptionPane.INFORMATION_MESSAGE);
-                    break;
+                    Validateur validateur = getValidateurByEmail(email);
+
+                    SwingUtilities.invokeLater(() -> {
+                        FrameValidateur frameValidateur= new FrameValidateur(AllMissions.getInstance(), validateur);
+                        frameValidateur.setVisible(true);
+                    });
                 default:
                     JOptionPane.showMessageDialog(null, "Rôle inconnu ! Merci de vérifier et réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
@@ -195,6 +199,25 @@ public class ConnectionManager {
                             rs.getString("email"),
                             rs.getString("password"),
                             rs.getString("metier")
+                    );
+                }
+            }
+        }
+        throw new SQLException("Bénévole non trouvé !");
+    }
+
+    private Validateur getValidateurByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM Validateur WHERE email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Validateur(
+                            rs.getString("firstname"),
+                            rs.getString("lastname"),
+                            rs.getString("email"),
+                            rs.getString("password")
+
                     );
                 }
             }

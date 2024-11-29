@@ -6,11 +6,17 @@ public class User {
     private String email;
     private String password;
 
+
+
+    private AllMissions allMissions ;
+
+
     public User(String firstname, String lastname, String email, String password) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
+
     }
 
     // Getters and setters
@@ -38,9 +44,18 @@ public class User {
         this.email = email;
     }
 
+    public AllMissions getAllMissions() {
+        return allMissions;
+    }
+
+    public void setAllMissions(AllMissions allMissions) {
+        this.allMissions = allMissions;
+    }
+
     public String getPassword() {
         return password;
     }
+
 
     public void setPassword(String password) {
         this.password = password;

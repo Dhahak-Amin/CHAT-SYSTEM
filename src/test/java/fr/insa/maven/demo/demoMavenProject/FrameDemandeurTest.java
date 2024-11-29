@@ -26,7 +26,7 @@ public class FrameDemandeurTest {
         allMissions.addMission(new Mission(MissionEtat.TERMINEE, "Déménagement", demandeur, Place.HOME));
 
         // Initialisation de la fenêtre
-        frame = new FrameDemandeur(allMissions, demandeur);
+        frame = new FrameDemandeur( demandeur);
     }
 
     @Test

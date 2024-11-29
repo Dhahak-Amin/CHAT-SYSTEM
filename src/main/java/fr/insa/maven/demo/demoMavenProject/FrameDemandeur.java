@@ -9,16 +9,17 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class FrameDemandeur extends JFrame {
-    private AllMissions allMissions; // Instance de AllMissions
+    private  AllMissions allMissions; // Instance de AllMissions
     private Demandeur demandeur;
     private DefaultListModel<Mission> missionListModel; // Modèle de la liste
     private JList<Mission> missionList; // Liste pour afficher les missions
     private JButton addButton; // Bouton pour ajouter une mission
     private JButton deleteButton; // Bouton pour supprimer une mission
 
-    public FrameDemandeur(AllMissions allMissions, Demandeur demandeur) {
-        this.allMissions = allMissions;
+    public FrameDemandeur( Demandeur demandeur) {
+
         this.demandeur = demandeur;
+        this.allMissions = AllMissions.getInstance();
         this.missionListModel = new DefaultListModel<>();
         this.missionList = new JList<>(missionListModel);
         this.addButton = new JButton("Ajouter une mission");
@@ -68,8 +69,9 @@ public class FrameDemandeur extends JFrame {
     private void updateMissionList() {
         missionListModel.clear(); // Effacer les éléments existants
         for (Mission mission : allMissions.getMissions()) {
+            if (mission.getDemandeur().equals(this.demandeur)){
             missionListModel.addElement(mission); // Ajouter chaque mission au modèle
-        }
+        }}
     }
     // Ajout dans la classe FrameDemandeur
     public DefaultListModel<Mission> getMissionListModel() {
@@ -94,6 +96,7 @@ public class FrameDemandeur extends JFrame {
             if (selectedPlace != null) {
                 Mission mission = demandeur.createMission(intitule, selectedPlace);
                 allMissions.addMission(mission);
+                allMissions.enregistrerMission2(mission);
                 updateMissionList();
             } else {
                 JOptionPane.showMessageDialog(this, "Sélection de l'emplacement annulée.", "Information", JOptionPane.INFORMATION_MESSAGE);
@@ -111,7 +114,7 @@ public class FrameDemandeur extends JFrame {
                 int missionIndex = Integer.parseInt(input) - 1; // 1 = première mission
                 if (missionIndex >= 0 && missionIndex < missionListModel.size()) {
                     Mission mission = missionListModel.get(missionIndex);
-                    allMissions.removeMission(mission.getIntitule()); // Supprime la mission de AllMissions
+                    allMissions.removeMission(mission); // Supprime la mission de AllMissions
                     updateMissionList();
                 } else {
                     JOptionPane.showMessageDialog(this, "Numéro de mission invalide !", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -156,14 +159,15 @@ public class FrameDemandeur extends JFrame {
 
     public static void main(String[] args) {
 
+        AllMissions allMissions = AllMissions.getInstance();
 
+        Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", Place.HOME, "alice@example.com", "password123");
+        Demandeur demandeur2 = new Demandeur("Alieece", "Deeupont", "Besoin dee'aide", "Jareedin", Place.HOSPITAL, "alice@exeample.com", "passweeord123");
 
-        Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", "Paris", "alice@example.com", "password123");
-        AllMissions allMissions = new AllMissions();
         Mission mission1 = new Mission("jardin",  demandeur, Place.HOME);
-        Mission mission2 = new Mission("piscine",  demandeur, Place.WORKPLACE);
+        Mission mission2 = new Mission("piscine",  demandeur2, Place.WORKPLACE);
         Mission mission3 = new Mission("canapé",  demandeur, Place.HOME);
-        Mission mission4 = new Mission("bobo",  demandeur, Place.HOSPITAL);
+        Mission mission4 = new Mission("bobo",  demandeur2, Place.HOSPITAL);
         Mission mission5 = new Mission("mamie",  demandeur, Place.EHPAD);
 
 // Ajout des missions à la liste des missions
@@ -172,11 +176,11 @@ public class FrameDemandeur extends JFrame {
         allMissions.addMission(mission3);
         allMissions.addMission(mission4);
         allMissions.addMission(mission5);
-        demandeur.setMissions(allMissions);
+
 
 
         SwingUtilities.invokeLater(() -> {
-            FrameDemandeur frame = new FrameDemandeur(allMissions, demandeur);
+            FrameDemandeur frame = new FrameDemandeur( demandeur);
             frame.setVisible(true);
         });
     }

@@ -49,9 +49,9 @@ public class ConnectionManager {
                         registerDemandeur(email, password);
                     }
                     Demandeur demandeur = getDemandeurByEmail(email);
-                    AllMissions allMissions = new AllMissions();
+                    AllMissions allMissions = AllMissions.getInstance();
                     SwingUtilities.invokeLater(() -> {
-                        FrameDemandeur frameDemandeur = new FrameDemandeur(allMissions, demandeur);
+                        FrameDemandeur frameDemandeur = new FrameDemandeur( demandeur);
                         frameDemandeur.setVisible(true);
                     });
                     break;
@@ -60,9 +60,9 @@ public class ConnectionManager {
                         registerBenevole(email, password);
                     }
                     Benevole benevole = getBenevoleByEmail(email);
-                    AllMissions allMissionsBenevole = new AllMissions();
+
                     SwingUtilities.invokeLater(() -> {
-                        FrameBenevole frameBenevole = new FrameBenevole(allMissionsBenevole, benevole);
+                        FrameBenevole frameBenevole = new FrameBenevole(AllMissions.getInstance(), benevole);
                         frameBenevole.setVisible(true);
                     });
                     break;

@@ -5,29 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="31a47144-4e69-4805-aae2-ea0e0de21359" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/ConnectionManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/ConnectionManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.AllMissionsTest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.FrameBenevoleTest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.FrameDemandeurTest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.UserServiceAuthTest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.UserServiceDeleteTest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.UserServiceUpdateTest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.ValidateurTest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.AllMissionsTest.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.FrameBenevoleTest.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.FrameDemandeurTest.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.UserServiceAuthTest.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.UserServiceDeleteTest.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.UserServiceUpdateTest.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.ValidateurTest.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/FrameValidateur.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Motif.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/UserServiceAuthTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/UserServiceAuthTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/ValidateurTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/ValidateurTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/AllMissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/AllMissions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Benevole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Benevole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/ConnectionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/ConnectionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Demandeur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Demandeur.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/FrameBenevole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/FrameBenevole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/FrameDemandeur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/FrameDemandeur.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Mission.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Mission.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/MissionEtat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/MissionEtat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Validateur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/insa/maven/demo/demoMavenProject/Validateur.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/FrameDemandeurTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/FrameDemandeurTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/AllMissions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/AllMissions.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Benevole.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Benevole.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/ConnectionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/ConnectionManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Demandeur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Demandeur.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameBenevole$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameBenevole$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameBenevole$MissionCellRenderer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameBenevole$MissionCellRenderer.class" afterDir="false" />
@@ -36,36 +31,65 @@
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameDemandeur$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameDemandeur$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameDemandeur$MissionCellRenderer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameDemandeur$MissionCellRenderer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameDemandeur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/FrameDemandeur.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Mission.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Mission.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/MissionEtat.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/MissionEtat.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Place.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Place.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/User.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Validateur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fr/insa/maven/demo/demoMavenProject/Validateur.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/demoMavenProject-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/demoMavenProject-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.UserServiceTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-fr.insa.maven.demo.demoMavenProject.UserServiceTest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.UserServiceTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/fr.insa.maven.demo.demoMavenProject.UserServiceTest.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/FrameBenevoleTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/FrameDemandeurTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/UserServiceAuthTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/UserServiceTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/fr/insa/maven/demo/demoMavenProject/ValidateurTest.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "git-widget-placeholder": "Merging main"
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: -1
+}</component>
+  <component name="ProjectId" id="2pQpCXQbNr4ELaE19319X2MBMb2" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
   }
-}]]></component>
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="31a47144-4e69-4805-aae2-ea0e0de21359" name="Changes" comment="" />
+      <created>1732708027288</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1732708027288</updated>
+    </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/fr/insa/maven/demo/demoMavenProject/AllMissionsTest.java</url>
+          <line>78</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

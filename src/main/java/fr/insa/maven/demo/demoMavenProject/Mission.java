@@ -6,6 +6,8 @@ public class Mission {
 
 
 
+
+    private Motif motif;
     private Benevole benevole ;
     private Place place ;
 
@@ -16,7 +18,7 @@ public class Mission {
 
     public Mission(String intitule, Demandeur demandeur, Place place) {
         this.etat = MissionEtat.EN_ATTENTE_AFFECTATION;
-        this.place=place ;
+        this.place=place;
         this.intitule = intitule;
         this.demandeur = demandeur;
     }
@@ -29,6 +31,14 @@ public class Mission {
         this.place = place;
         this.intitule = intitule;
         this.demandeur = demandeur;
+    }
+    public Mission(MissionEtat etat, String intitule, Demandeur demandeur, Place place, Benevole benevole) {
+
+        this.etat = etat;
+        this.place = place;
+        this.intitule = intitule;
+        this.demandeur = demandeur;
+        this.benevole = benevole;
     }
 
 
@@ -71,6 +81,13 @@ public class Mission {
 
     public void setDemandeur(Demandeur demandeur) {
         this.demandeur = demandeur;
+    }
+    public Motif getMotif() {
+        return motif;
+    }
+
+    public void setMotif(Motif motif) {
+        this.motif = motif;
     }
 
     public Benevole getBenevole() {

@@ -37,7 +37,7 @@ public class AllMissionsTest {
         }
 
         // Initialiser AllMissions et un objet Demandeur
-        allMissions = new AllMissions();
+        allMissions = AllMissions.getInstance();
         demandeur = new Demandeur(
                 "Alice",
                 "Dupont",
@@ -64,10 +64,10 @@ public class AllMissionsTest {
     }
 
     @Test
-<<<<<<< HEAD
+
     void testAddMission() {
         mission = new Mission(MissionEtat.INVALIDE, "Demande d'aide au jardinage", demandeur, Place.HOME);
-=======
+
     public void testAddMission() {
         // Ajouter une mission
         mission = new Mission(
@@ -76,7 +76,7 @@ public class AllMissionsTest {
                 demandeur,
                 Place.HOME
         );
->>>>>>> d84b19edeb6e937aad110453e26e87d060aa3a4a
+
         allMissions.addMission(mission);
 
         // Vérifier que la mission a été ajoutée
@@ -84,10 +84,10 @@ public class AllMissionsTest {
     }
 
     @Test
-<<<<<<< HEAD
+
     void testRemoveMission() {
-        mission = new Mission(MissionEtat.EN_COURS, "Demande d'aide au jardinage", demandeur, Place.HOME);
-=======
+        mission = new Mission(MissionEtat.EN_COURS_DE_VALIDATION, "Demande d'aide au jardinage", demandeur, Place.HOME);
+
     public void testFindMission() {
         // Ajouter une mission et la rechercher
         mission = new Mission(
@@ -96,7 +96,7 @@ public class AllMissionsTest {
                 demandeur,
                 Place.HOME
         );
->>>>>>> d84b19edeb6e937aad110453e26e87d060aa3a4a
+
         allMissions.addMission(mission);
 
         Mission foundMission = allMissions.findMission("Simple Mission");
@@ -105,12 +105,12 @@ public class AllMissionsTest {
     }
 
     @Test
-<<<<<<< HEAD
+
     void testUpdateMission() {
         mission = new Mission(MissionEtat.EN_COURS, "Demande d'aide au jardinage", demandeur,Place.HOME);
         allMissions.addMission(mission);
         assertTrue(allMissions.updateMission("Demande d'aide au jardinage", MissionEtat.EN_COURS, "Aide jardinage", demandeur));
-=======
+
     public void testRemoveMission() {
         // Ajouter une mission, puis la supprimer
         mission = new Mission(
@@ -120,8 +120,8 @@ public class AllMissionsTest {
                 Place.HOME
         );
         allMissions.addMission(mission);
-        boolean removed = allMissions.removeMission("Simple Mission");
->>>>>>> d84b19edeb6e937aad110453e26e87d060aa3a4a
+        allMissions.removeMission(mission);
+
 
         // Vérifier que la mission a été supprimée
         assertTrue(removed, "La mission devrait être supprimée.");
@@ -129,10 +129,8 @@ public class AllMissionsTest {
     }
 
     @Test
-<<<<<<< HEAD
-    void testFindMission() {
-        mission = new Mission(MissionEtat.TERMINEE, "Demande d'aide au jardinage", demandeur,Place.HOME);
-=======
+
+
     public void testUpdateMission() {
         // Ajouter une mission, puis la mettre à jour
         mission = new Mission(
@@ -141,7 +139,7 @@ public class AllMissionsTest {
                 demandeur,
                 Place.HOME
         );
->>>>>>> d84b19edeb6e937aad110453e26e87d060aa3a4a
+
         allMissions.addMission(mission);
 
         boolean updated = allMissions.updateMission(
@@ -157,7 +155,7 @@ public class AllMissionsTest {
         assertNotNull(updatedMission, "La mission mise à jour devrait être trouvée.");
         assertEquals(MissionEtat.EN_COURS, updatedMission.getEtat(), "L'état de la mission devrait être EN_COURS.");
     }
-<<<<<<< HEAD
+
 
     @Test
     void testClearMissions() {
@@ -168,6 +166,5 @@ public class AllMissionsTest {
     }
 
 
-=======
->>>>>>> d84b19edeb6e937aad110453e26e87d060aa3a4a
+
 }

@@ -17,7 +17,7 @@ public class FrameBenevole extends JFrame {
         this.allMissions = allMissions;
         this.missionListModel = new DefaultListModel<>();
         this.missionList = new JList<>(missionListModel);
-        this.changeStatusButton = new JButton("Changer le statut de la mission");
+        this.changeStatusButton = new JButton("Accepter la mission");
 
         // Configuration de la fenêtre
         setTitle("Missions du Bénévole");
@@ -61,47 +61,54 @@ public class FrameBenevole extends JFrame {
     }
 
     // Méthode pour changer le statut d'une mission
+    // Méthode pour changer le statut d'une mission
     private void changeMissionStatus() {
         // Vérifier si une mission est sélectionnée
         Mission selectedMission = missionList.getSelectedValue();
         if (selectedMission != null) {
-            // Demander à l'utilisateur de choisir un nouveau statut
-            MissionEtat[] statuses = {
-                    MissionEtat.EN_ATTENTE_AFFECTATION,
-                    MissionEtat.EN_COURS
-            };
+            // Vérifier la PLACE de la mission
+            if (selectedMission.getPlace() == Place.EHPAD || selectedMission.getPlace() == Place.HOSPITAL) {
+                // Demander à l'utilisateur de choisir un statut "EN_COURS_DE_VALIDATION"
+                MissionEtat newStatus = MissionEtat.EN_COURS_DE_VALIDATION;
 
-            MissionEtat newStatus = (MissionEtat) JOptionPane.showInputDialog(
-                    this,
-                    "Choisissez un nouveau statut pour la mission :",
-                    "Sélectionner le statut",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    statuses,
-                    statuses[0]
-            );
-
-            if (newStatus != null) {
-                // Modifier le statut de la mission
-
+                // Appliquer le nouveau statut
                 selectedMission.setEtat(newStatus);
 
-                // Si le nouveau statut est "EN_COURS", ajouter la mission à la liste du bénévole
-                if (newStatus == MissionEtat.EN_COURS) {
-                    benevole.acceptMission(selectedMission);
-                }
+                // Assigner la mission au bénévole
 
+                benevole.acceptMission(selectedMission);
 
-              //  selectedMission.setEtat(newStatus);
-
-                updateMissionList(); // Mettre à jour la liste affichée
             } else {
-                JOptionPane.showMessageDialog(this, "Sélection annulée.", "Information", JOptionPane.INFORMATION_MESSAGE);
+                // Missions avec une autre PLACE sont directement validées
+                MissionEtat newStatus = MissionEtat.VALIDEE;
+
+                // Appliquer le nouveau statut
+                selectedMission.setEtat(newStatus);
+
+                // Assigner la mission au bénévole
+                benevole.acceptMission(selectedMission);
             }
+
+            // Enregistrer la mise à jour
+            allMissions.enregistrerMission2(selectedMission);
+
+            // Mettre à jour l'affichage
+            updateMissionList();
+
+            // Notification de succès
+            JOptionPane.showMessageDialog(this,
+                    "La mission a été mise à jour avec succès : " + selectedMission.getEtat(),
+                    "Mise à jour réussie",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         } else {
-            JOptionPane.showMessageDialog(this, "Veuillez sélectionner une mission.", "Erreur", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Veuillez sélectionner une mission.",
+                    "Erreur",
+                    JOptionPane.WARNING_MESSAGE);
         }
     }
+
 
 
     // Renderer personnalisé pour afficher chaque mission
@@ -140,16 +147,16 @@ public class FrameBenevole extends JFrame {
 
     public static void main(String[] args) {
         // Création de l'objet AllMissions
-        AllMissions allMissions = new AllMissions();
+        AllMissions allMissions = AllMissions.getInstance();
 
         // Exemple de missions
         Benevole benevole = new Benevole ("Elian", "Boaglio", "lalalla", "mdp","agriculteur");
-        Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", "Paris", "alice@example.com", "password123");
-        Mission mission1 = new Mission(MissionEtat.EN_COURS,"En cours", demandeur, Place.HOME);
+        Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", Place.HOME, "alice@example.com", "password123");
+        Mission mission1 = new Mission(MissionEtat.EN_COURS_DE_VALIDATION,"En cours", demandeur, Place.HOME);
         Mission mission2 = new Mission(MissionEtat.INVALIDE,"En attente",  demandeur, Place.WORKPLACE);
-        Mission mission3 = new Mission("Complétée",  demandeur, Place.HOME);
-        Mission mission4 = new Mission("Annulée",  demandeur, Place.HOSPITAL);
-        Mission mission5 = new Mission("En cours",  demandeur, Place.EHPAD);
+        Mission mission3 = new Mission("voiture maison hehe",  demandeur, Place.HOME);
+        Mission mission4 = new Mission("besoin de soin d'urgence",  demandeur, Place.HOSPITAL);
+        Mission mission5 = new Mission("un peu de compagnie",  demandeur, Place.EHPAD);
 
         // Ajout des missions à la liste des missions
         allMissions.addMission(mission1);

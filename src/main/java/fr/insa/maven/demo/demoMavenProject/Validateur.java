@@ -9,10 +9,15 @@ import java.util.Arrays;
 public class Validateur extends User {
     private Connection conn; // Connexion à la base de données
 
-    public Validateur(String firstname, String lastname, String email, String password, Connection conn) {
+    public Validateur(String firstname, String lastname, String email, String password, Connection conn ) {
         super(firstname, lastname, email, password);
         this.conn = conn; // Initialiser la connexion
     }
+    public Validateur(String firstname, String lastname, String email, String password ) {
+        super(firstname, lastname, email, password);
+
+    }
+
 
     public void validerMission(Mission mission, List<Benevole> benevoles) {
         Place missionPlace = mission.getPlace();
@@ -21,8 +26,10 @@ public class Validateur extends User {
         // Si l'emplacement est OTHER, la mission est automatiquement validée
         if (missionPlace == Place.OTHER) {
             mission.setEtat(MissionEtat.VALIDEE);
-            mission.setBenevole(null); // Aucun bénévole attribué
-            enregistrerMission(mission); // Enregistrer la mission validée
+            mission.setBenevole(null);
+            this.getAllMissions().enregistrerMission(mission);
+            // Aucun bénévole attribué
+             // Enregistrer la mission validée
             System.out.println("Mission validée automatiquement pour emplacement : " + missionPlace);
             return;
         }
@@ -35,7 +42,7 @@ public class Validateur extends User {
                 benevoleAttribue.acceptMission(mission); // Le bénévole accepte la mission
                 mission.setEtat(MissionEtat.VALIDEE);
                 mission.setBenevole(benevoleAttribue); // Assignation du bénévole à la mission
-                enregistrerMission(mission); // Enregistrer la mission validée
+                this.getAllMissions().enregistrerMission(mission); // Enregistrer la mission validée
                 System.out.println("Mission validée et attribuée à " + benevoleAttribue.getFirstname() + " " + benevoleAttribue.getLastname());
             } else {
                 System.out.println("Aucun bénévole disponible pour l'emplacement choisi ou avec le métier requis.");
@@ -47,20 +54,7 @@ public class Validateur extends User {
         }
     }
 
-    private void enregistrerMission(Mission mission) {
-        try {
-            String sql = "INSERT INTO Mission (intitule, place, etat, demandeur_email, benevole_email) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, mission.getIntitule());
-            stmt.setString(2, mission.getPlace().name());
-            stmt.setString(3, mission.getEtat().name());
-            stmt.setString(4, mission.getDemandeur().getEmail()); // Assurez-vous que l'email du demandeur est utilisé
-            stmt.setString(5, mission.getBenevole() != null ? mission.getBenevole().getEmail() : null); // Insérez l'email du bénévole
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private Benevole trouverBenevoleCompatibilite(List<Benevole> benevoles, String metierRequis) {
         // Rechercher un bénévole avec le métier requis et qui est libre

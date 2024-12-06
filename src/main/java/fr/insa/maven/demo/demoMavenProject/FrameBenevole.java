@@ -11,10 +11,14 @@ public class FrameBenevole extends JFrame {
     private JList<Mission> missionList; // Liste pour afficher les missions
     private JButton changeStatusButton; // Bouton pour changer le statut d'une mission
 
+    private JLabel moyenneLabel;
     private Benevole benevole;
     public FrameBenevole(AllMissions allMissions, Benevole benevole) {
         this.benevole=benevole;
         this.allMissions = allMissions;
+        // Ajout de l'étiquette de la moyenne
+        moyenneLabel = new JLabel("Moyenne des avis : " + benevole.MoyennetoString());
+        add(moyenneLabel, BorderLayout.NORTH);
         this.missionListModel = new DefaultListModel<>();
         this.missionList = new JList<>(missionListModel);
         this.changeStatusButton = new JButton("Accepter la mission");
@@ -47,60 +51,56 @@ public class FrameBenevole extends JFrame {
         });
 
         // Initialiser l'affichage des missions
-        updateMissionList();
-    }
+        updateMissionList();    }
 
     // Méthode pour mettre à jour la liste des missions affichées
     private void updateMissionList() {
-        missionListModel.clear(); // Effacer les éléments existants
+
         for (Mission mission : allMissions.getMissions()) {
-            if (mission.getEtat().equals(MissionEtat.EN_ATTENTE_AFFECTATION)) {
-                missionListModel.addElement(mission); // Ajouter chaque mission au modèle
+            // Affiche les missions en attente d'affectation
+            if (mission.getEtat() == MissionEtat.EN_ATTENTE_AFFECTATION && mission.getBenevole() == null) {
+                missionListModel.addElement(mission);
             }
-            }
+        }
+
     }
 
-    // Méthode pour changer le statut d'une mission
-    // Méthode pour changer le statut d'une mission
     private void changeMissionStatus() {
-        // Vérifier si une mission est sélectionnée
+        // Vérifie si une mission est sélectionnée
         Mission selectedMission = missionList.getSelectedValue();
         if (selectedMission != null) {
-            // Vérifier la PLACE de la mission
-            if (selectedMission.getPlace() == Place.EHPAD || selectedMission.getPlace() == Place.HOSPITAL) {
-                // Demander à l'utilisateur de choisir un statut "EN_COURS_DE_VALIDATION"
-                MissionEtat newStatus = MissionEtat.EN_COURS_DE_VALIDATION;
-
-                // Appliquer le nouveau statut
-                selectedMission.setEtat(newStatus);
+            if (selectedMission.getPlace() == Place.HOSPITAL) {
+                // Missions avec PLACE == HOSPITAL passent directement en EN_COURS_DE_VALIDATION
+                selectedMission.setEtat(MissionEtat.EN_COURS_DE_VALIDATION);
 
                 // Assigner la mission au bénévole
-
                 benevole.acceptMission(selectedMission);
 
+                // Enregistrer la mise à jour
+                allMissions.enregistrerMission2(selectedMission);
+
+                JOptionPane.showMessageDialog(this,
+                        "La mission est maintenant en cours de validation par un validateur.",
+                        "Mise à jour réussie",
+                        JOptionPane.INFORMATION_MESSAGE);
             } else {
                 // Missions avec une autre PLACE sont directement validées
-                MissionEtat newStatus = MissionEtat.VALIDEE;
-
-                // Appliquer le nouveau statut
-                selectedMission.setEtat(newStatus);
+                selectedMission.setEtat(MissionEtat.VALIDEE);
 
                 // Assigner la mission au bénévole
                 benevole.acceptMission(selectedMission);
-            }
 
-            // Enregistrer la mise à jour
-            allMissions.enregistrerMission2(selectedMission);
+                // Enregistrer la mise à jour
+                allMissions.enregistrerMission2(selectedMission);
+
+                JOptionPane.showMessageDialog(this,
+                        "La mission a été validée avec succès.",
+                        "Mise à jour réussie",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
 
             // Mettre à jour l'affichage
             updateMissionList();
-
-            // Notification de succès
-            JOptionPane.showMessageDialog(this,
-                    "La mission a été mise à jour avec succès : " + selectedMission.getEtat(),
-                    "Mise à jour réussie",
-                    JOptionPane.INFORMATION_MESSAGE);
-
         } else {
             JOptionPane.showMessageDialog(this,
                     "Veuillez sélectionner une mission.",
@@ -144,7 +144,7 @@ public class FrameBenevole extends JFrame {
         return missionListModel;
     }
 
-
+/*
     public static void main(String[] args) {
         // Création de l'objet AllMissions
         AllMissions allMissions = AllMissions.getInstance();
@@ -172,6 +172,6 @@ public class FrameBenevole extends JFrame {
         });
     }
 
-
+*/
 
 }

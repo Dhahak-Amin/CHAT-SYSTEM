@@ -57,17 +57,18 @@ public class FrameValidateur extends JFrame {
             }
         });
 
-        // Charger les missions en attente de validation
+        // Charger la liste des missions
         updateMissionList();
     }
 
     private void updateMissionList() {
-        missionListModel.clear();
         for (Mission mission : allMissions.getMissions()) {
+            // Filtrer les missions qui nécessitent une validation
             if (mission.getEtat() == MissionEtat.EN_COURS_DE_VALIDATION) {
                 missionListModel.addElement(mission);
             }
         }
+       // System.out.println("Missions en attente de validation : " + missionListModel.size());
     }
 
     public String getBenevoleDetails(Benevole benevole) {
@@ -80,11 +81,51 @@ public class FrameValidateur extends JFrame {
 
     private void changeMissionStatus(MissionEtat newStatus) {
         Mission selectedMission = missionList.getSelectedValue();
+
         if (selectedMission != null) {
+            Benevole benevole = selectedMission.getBenevole();
+
+            if (benevole == null) {
+                // Avertir si aucun bénévole n'est assigné
+                JOptionPane.showMessageDialog(this,
+                        "Cette mission n'a pas encore de bénévole assigné. Impossible de valider ou d'invalider.",
+                        "Erreur",
+                        JOptionPane.WARNING_MESSAGE);
+                return; // Sortir de la méthode
+            }
+
+            if (newStatus == MissionEtat.INVALIDE) {
+                // Demander un motif via une boîte de dialogue
+                String motif = JOptionPane.showInputDialog(
+                        this,
+                        "Veuillez fournir un motif pour invalider la mission :",
+                        "Motif d'invalidation",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (motif == null || motif.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                            "L'invalidation nécessite un motif.",
+                            "Erreur",
+                            JOptionPane.WARNING_MESSAGE);
+                    return; // Annuler l'invalidation si aucun motif n'est fourni
+                }
+
+                // Ajouter le motif d'invalidation
+                Motif mess = new Motif(this.validateur, motif);
+                selectedMission.setMotif(mess);
+            }
+
+            // Modifier le statut de la mission
             selectedMission.setEtat(newStatus);
-            //selectedMission.setValidateur(this.validateur);
-            allMissions.enregistrerMission2(selectedMission); // Mettre à jour la base de données
-            updateMissionList(); // Mettre à jour l'affichage
+
+            // Enregistrer les modifications dans la base de données
+            allMissions.enregistrerMission2(selectedMission);
+
+            // Mettre à jour la liste des missions
+            updateMissionList();
+
+            // Message de confirmation
             JOptionPane.showMessageDialog(this,
                     "La mission a été mise à jour en : " + newStatus,
                     "Mise à jour réussie",
@@ -96,6 +137,8 @@ public class FrameValidateur extends JFrame {
                     JOptionPane.WARNING_MESSAGE);
         }
     }
+
+
 
     // Renderer pour afficher les détails de la mission
     // Renderer pour afficher les détails de la mission
@@ -110,7 +153,16 @@ public class FrameValidateur extends JFrame {
 
         @Override
         public Component getListCellRendererComponent(JList<? extends Mission> list, Mission mission, int index, boolean isSelected, boolean cellHasFocus) {
-            String benevoleDetails = getBenevoleDetails(mission.getBenevole()); // Récupérer les infos du bénévole
+            String benevoleDetails;
+            Benevole benevole = mission.getBenevole();
+
+            if (benevole != null) {
+                benevoleDetails = benevole.getFirstname() + " " + benevole.getLastname() + " (" + benevole.getMetier() + ")";
+                benevoleDetails += " - Moyenne: " + benevole.MoyennetoString();
+            } else {
+                benevoleDetails = "Aucun bénévole attribué";
+            }
+
             String missionDetails = (index + 1) + ". " + mission.getIntitule() + " - " +
                     mission.getPlace().name() + " - " + mission.getEtat() + " - " + benevoleDetails;
 
@@ -127,9 +179,12 @@ public class FrameValidateur extends JFrame {
             return this;
         }
     }
+}
 
 
-    // Lancer l'interface
+
+/*
+        // Lancer l'interface
     public static void main(String[] args) {
         AllMissions allMissions = AllMissions.getInstance();
 
@@ -151,4 +206,5 @@ public class FrameValidateur extends JFrame {
             frame.setVisible(true);
         });
     }
-}
+
+ */

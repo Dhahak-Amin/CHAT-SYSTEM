@@ -30,7 +30,7 @@ public class Validateur extends User {
             this.getAllMissions().enregistrerMission(mission);
             // Aucun bénévole attribué
              // Enregistrer la mission validée
-            System.out.println("Mission validée automatiquement pour emplacement : " + missionPlace);
+            //System.out.println("Mission validée automatiquement pour emplacement : " + missionPlace);
             return;
         }
 
@@ -43,13 +43,13 @@ public class Validateur extends User {
                 mission.setEtat(MissionEtat.VALIDEE);
                 mission.setBenevole(benevoleAttribue); // Assignation du bénévole à la mission
                 this.getAllMissions().enregistrerMission(mission); // Enregistrer la mission validée
-                System.out.println("Mission validée et attribuée à " + benevoleAttribue.getFirstname() + " " + benevoleAttribue.getLastname());
+               // System.out.println("Mission validée et attribuée à " + benevoleAttribue.getFirstname() + " " + benevoleAttribue.getLastname());
             } else {
-                System.out.println("Aucun bénévole disponible pour l'emplacement choisi ou avec le métier requis.");
+              //  System.out.println("Aucun bénévole disponible pour l'emplacement choisi ou avec le métier requis.");
                 mission.setEtat(MissionEtat.EN_ATTENTE_AFFECTATION);
             }
         } else {
-            System.out.println("L'emplacement de la mission n'est pas valide. Mission invalidée.");
+            //System.out.println("L'emplacement de la mission n'est pas valide. Mission invalidée.");
             mission.setEtat(MissionEtat.INVALIDE);
         }
     }

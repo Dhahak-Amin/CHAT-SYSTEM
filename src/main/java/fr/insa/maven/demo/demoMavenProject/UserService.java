@@ -59,9 +59,9 @@ public class UserService {
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("L'utilisateur a été mis à jour avec succès.");
+               // System.out.println("L'utilisateur a été mis à jour avec succès.");
             } else {
-                System.out.println("Aucune mise à jour n'a été effectuée.");
+               // System.out.println("Aucune mise à jour n'a été effectuée.");
             }
         }
     }
@@ -74,9 +74,9 @@ public class UserService {
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("L'utilisateur a été supprimé.");
+               // System.out.println("L'utilisateur a été supprimé.");
             } else {
-                System.out.println("Aucun utilisateur trouvé avec cet email.");
+                //System.out.println("Aucun utilisateur trouvé avec cet email.");
             }
         }
     }

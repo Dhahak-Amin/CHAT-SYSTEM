@@ -3,10 +3,8 @@ package fr.insa.maven.demo.demoMavenProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.io.*;
+import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,27 +12,17 @@ public class AllMissionsTest {
 
     private AllMissions allMissions;
     private Demandeur demandeur;
-    private Mission mission;
 
-    // Informations de connexion à la base de données
-    static final String DB_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012";
-    static final String USER = "projet_gei_012";
-    static final String PASS = "dith1Que";
+    // Informations de connexion MySQL local
+    static final String DB_URL = "jdbc:mysql://localhost:3306/testdb";
+    static final String USER = "root"; // Remplacez par votre utilisateur MySQL
+    static final String PASS = "password"; // Remplacez par votre mot de passe MySQL
+    static final String SQL_INIT_FILE = "Sql_Test.sql";
 
     @BeforeEach
-    public void setUp() throws SQLException {
-        // Établir la connexion à la base de données
-        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-        // Nettoyer la table Mission avant chaque test
-        try (PreparedStatement clearMissionTable = conn.prepareStatement("DELETE FROM Mission")) {
-            clearMissionTable.executeUpdate();
-        }
-
-        // Nettoyer la table Demandeur avant chaque test
-        try (PreparedStatement clearDemandeurTable = conn.prepareStatement("DELETE FROM Demandeur")) {
-            clearDemandeurTable.executeUpdate();
-        }
+    public void setUp() throws SQLException, IOException, InterruptedException {
+        // Charger le fichier SQL pour créer les tables
+        executeSqlFile(SQL_INIT_FILE);
 
         // Initialiser AllMissions et un objet Demandeur
         allMissions = AllMissions.getInstance();
@@ -48,123 +36,110 @@ public class AllMissionsTest {
                 "password123"
         );
 
-        // Insérer le demandeur dans la base de données
-        try (PreparedStatement insertDemandeurStmt = conn.prepareStatement(
-                "INSERT INTO Demandeur (email, lastname, firstname, password, description, needs, location) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        )) {
-            insertDemandeurStmt.setString(1, demandeur.getEmail());
-            insertDemandeurStmt.setString(2, demandeur.getLastname());
-            insertDemandeurStmt.setString(3, demandeur.getFirstname());
-            insertDemandeurStmt.setString(4, demandeur.getPassword());
-            insertDemandeurStmt.setString(5, demandeur.getDescription());
-            insertDemandeurStmt.setString(6, demandeur.getNeeds());
-            insertDemandeurStmt.setString(7, demandeur.getLocation().name()); // Pour l'énumération
-            insertDemandeurStmt.executeUpdate();
+        // Insérer le demandeur dans la base
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement stmt = conn.prepareStatement(
+                     "INSERT INTO Demandeur (email, lastname, firstname, password, description, needs, location) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+            stmt.setString(1, demandeur.getEmail());
+            stmt.setString(2, demandeur.getLastname());
+            stmt.setString(3, demandeur.getFirstname());
+            stmt.setString(4, demandeur.getPassword());
+            stmt.setString(5, demandeur.getDescription());
+            stmt.setString(6, demandeur.getNeeds());
+            stmt.setString(7, demandeur.getLocation().name());
+            stmt.executeUpdate();
         }
     }
 
     @Test
-
-    void testAddMission() {
-        mission = new Mission(MissionEtat.INVALIDE, "Demande d'aide au jardinage", demandeur, Place.HOME);
-
     public void testAddMission() {
-        // Ajouter une mission
-        mission = new Mission(
+        Mission mission = new Mission(
                 MissionEtat.EN_ATTENTE_AFFECTATION,
-                "Simple Mission",
+                "Mission A",
                 demandeur,
                 Place.HOME
         );
 
-        allMissions.addMission(mission);
+        allMissions.enregistrerMission(mission);
+        allMissions.loadMissionsFromDatabase();
 
-        // Vérifier que la mission a été ajoutée
-        assertEquals(1, allMissions.countMissions(), "Le nombre de missions devrait être 1 après l'ajout.");
+        assertEquals(1, allMissions.countMissions(), "La mission n'a pas été correctement ajoutée.");
     }
 
     @Test
-
-    void testRemoveMission() {
-        mission = new Mission(MissionEtat.EN_COURS_DE_VALIDATION, "Demande d'aide au jardinage", demandeur, Place.HOME);
-
-    public void testFindMission() {
-        // Ajouter une mission et la rechercher
-        mission = new Mission(
-                MissionEtat.EN_ATTENTE_AFFECTATION,
-                "Simple Mission",
-                demandeur,
-                Place.HOME
-        );
-
-        allMissions.addMission(mission);
-
-        Mission foundMission = allMissions.findMission("Simple Mission");
-        assertNotNull(foundMission, "La mission ajoutée devrait être trouvée.");
-        assertEquals(MissionEtat.EN_ATTENTE_AFFECTATION, foundMission.getEtat(), "L'état de la mission devrait être EN_ATTENTE.");
-    }
-
-    @Test
-
-    void testUpdateMission() {
-        mission = new Mission(MissionEtat.EN_COURS, "Demande d'aide au jardinage", demandeur,Place.HOME);
-        allMissions.addMission(mission);
-        assertTrue(allMissions.updateMission("Demande d'aide au jardinage", MissionEtat.EN_COURS, "Aide jardinage", demandeur));
-
     public void testRemoveMission() {
-        // Ajouter une mission, puis la supprimer
-        mission = new Mission(
+        Mission mission = new Mission(
                 MissionEtat.EN_ATTENTE_AFFECTATION,
-                "Simple Mission",
+                "Mission B",
                 demandeur,
                 Place.HOME
         );
-        allMissions.addMission(mission);
+
+        allMissions.enregistrerMission(mission);
+        allMissions.loadMissionsFromDatabase();
         allMissions.removeMission(mission);
 
-
-        // Vérifier que la mission a été supprimée
-        assertTrue(removed, "La mission devrait être supprimée.");
-        assertEquals(0, allMissions.countMissions(), "Le nombre de missions devrait être 0 après la suppression.");
+        allMissions.loadMissionsFromDatabase();
+        assertEquals(0, allMissions.countMissions(), "La mission n'a pas été correctement supprimée.");
     }
 
     @Test
-
-
-    public void testUpdateMission() {
-        // Ajouter une mission, puis la mettre à jour
-        mission = new Mission(
+    public void testFindMission() {
+        Mission mission = new Mission(
                 MissionEtat.EN_ATTENTE_AFFECTATION,
-                "Simple Mission",
+                "Mission C",
                 demandeur,
                 Place.HOME
         );
 
-        allMissions.addMission(mission);
+        allMissions.enregistrerMission(mission);
+        allMissions.loadMissionsFromDatabase();
 
-        boolean updated = allMissions.updateMission(
-                "Simple Mission",
-                "EN_COURS",
-                "Updated Mission",
-                demandeur
-        );
-
-        // Vérifier que la mission a été mise à jour
-        assertTrue(updated, "La mission devrait être mise à jour.");
-        Mission updatedMission = allMissions.findMission("Updated Mission");
-        assertNotNull(updatedMission, "La mission mise à jour devrait être trouvée.");
-        assertEquals(MissionEtat.EN_COURS, updatedMission.getEtat(), "L'état de la mission devrait être EN_COURS.");
+        Mission foundMission = allMissions.findMission("Mission C");
+        assertNotNull(foundMission, "Mission introuvable.");
+        assertEquals(MissionEtat.EN_ATTENTE_AFFECTATION, foundMission.getEtat(), "L'état de la mission est incorrect.");
     }
-
 
     @Test
-    void testClearMissions() {
-        mission = new Mission(MissionEtat.VALIDEE, "Demande d'aide au jardinage", demandeur,Place.HOME);
-        allMissions.addMission(mission);
-        allMissions.clearMissions();
-        assertEquals(0, allMissions.countMissions());
+    public void testUpdateMission() {
+        Mission mission = new Mission(
+                MissionEtat.EN_ATTENTE_AFFECTATION,
+                "Mission D",
+                demandeur,
+                Place.HOME
+        );
+
+        allMissions.enregistrerMission(mission);
+        allMissions.loadMissionsFromDatabase();
+
+        boolean updated = allMissions.updateMission("Mission D", "VALIDEE", "Mission Updated", demandeur);
+        allMissions.loadMissionsFromDatabase();
+
+        Mission updatedMission = allMissions.findMission("Mission Updated");
+        assertTrue(updated, "Mise à jour échouée.");
+        assertNotNull(updatedMission, "Mission mise à jour introuvable.");
+        assertEquals(MissionEtat.VALIDEE, updatedMission.getEtat(), "L'état de la mission mise à jour est incorrect.");
     }
 
+    private void executeSqlFile(String sqlFilePath) throws IOException, InterruptedException {
+        // Utilisation du ClassLoader pour récupérer le chemin du fichier dans les ressources
+        String path = AllMissionsTest.class.getClassLoader().getResource(sqlFilePath).getPath();
 
+        // Commande pour exécuter le fichier SQL
+        String command = String.format("mysql -u%s -p%s testdb < %s", USER, PASS, path);
+        Process process = Runtime.getRuntime().exec(command);
 
+        // Capture des erreurs dans l'exécution de la commande
+        try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+            String line;
+            while ((line = errorReader.readLine()) != null) {
+                System.err.println(line);
+            }
+        }
+
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new IOException("Erreur lors de l'exécution du fichier SQL. Code de sortie : " + exitCode);
+        }
+    }
 }

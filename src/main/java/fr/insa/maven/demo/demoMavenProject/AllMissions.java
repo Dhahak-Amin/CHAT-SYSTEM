@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class AllMissions {
     // L'instance unique, volatile pour assurer la visibilité correcte entre threads
     private static volatile AllMissions instance;
@@ -15,6 +17,30 @@ public class AllMissions {
     static final String DB_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012";
     static final String USER = "projet_gei_012";
     static final String PASS = "dith1Que";
+
+  public Demandeur getDemandeurByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM Demandeur WHERE email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Demandeur(
+                            rs.getString("firstname"),
+                            rs.getString("lastname"),
+                            rs.getString("description"),
+                            rs.getString("needs"),
+                            Place.valueOf(rs.getString("location")),
+                            rs.getString("email"),
+                            rs.getString("password")
+                    );
+                }
+            }
+        }
+        throw new SQLException("Demandeur non trouvé !");
+    }
+
+
+
 
     // Constructeur privé pour empêcher les instances externes
     private AllMissions() {
@@ -95,10 +121,68 @@ public class AllMissions {
         return false;
     }
 
+    public Benevole getBenevoleByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM Benevole WHERE email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Benevole benevole = new Benevole(
+                            rs.getString("firstname"),
+                            rs.getString("lastname"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("metier")
+                    );
+
+                    // Charger les avis associés
+                    benevole.setListeAvis(loadAvisForBenevole(email));
+                    return benevole;
+                }
+            }
+        }
+        throw new SQLException("Bénévole non trouvé !");
+    }
+
     // Méthode pour obtenir la liste des missions
     public List<Mission> getMissions() {
         return missions;
     }
+    public void loadMissionsFromDatabase() {
+        try {
+            String sql = "SELECT * FROM Mission";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            missions.clear(); // Réinitialise la liste des missions
+
+            while (rs.next()) {
+                Demandeur demandeur = getDemandeurByEmail(rs.getString("demandeur_email"));
+                Benevole benevole = null;
+
+                if (rs.getString("benevole_email") != null) {
+                    benevole = getBenevoleByEmail(rs.getString("benevole_email"));
+                }
+
+                Mission mission = new Mission(
+                        MissionEtat.valueOf(rs.getString("etat")),
+                        rs.getString("intitule"),
+                        demandeur,
+                        Place.valueOf(rs.getString("place")),
+                        benevole
+                );
+
+                missions.add(mission);
+
+                // Log des missions chargées
+               // System.out.println("Mission chargée : " + mission.getIntitule() + ", Demandeur : " + (demandeur != null ? demandeur.getEmail() : "null"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // Méthode pour enregistrer une mission dans la base de données
     public void enregistrerMission(Mission mission) {
@@ -117,17 +201,17 @@ public class AllMissions {
     }
     public void enregistrerMission2(Mission mission) {
         try {
-            // Vérifier si la mission existe déjà
+            // Vérifie si la mission existe déjà dans la base de données
             String checkSql = "SELECT COUNT(*) FROM Mission WHERE intitule = ? AND demandeur_email = ?";
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
                 checkStmt.setString(1, mission.getIntitule());
                 checkStmt.setString(2, mission.getDemandeur().getEmail());
                 try (ResultSet rs = checkStmt.executeQuery()) {
-                    rs.next();
+                    rs.next(); // Passe à la première ligne des résultats
                     int count = rs.getInt(1);
 
                     if (count == 0) {
-                        // La mission n'existe pas, insérer une nouvelle mission
+                        // Si la mission n'existe pas, insère une nouvelle entrée
                         String insertSql = "INSERT INTO Mission (intitule, place, etat, demandeur_email, benevole_email) VALUES (?, ?, ?, ?, ?)";
                         try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
                             insertStmt.setString(1, mission.getIntitule());
@@ -138,7 +222,7 @@ public class AllMissions {
                             insertStmt.executeUpdate();
                         }
                     } else {
-                        // La mission existe, la mettre à jour
+                        // Si la mission existe déjà, effectue une mise à jour
                         String updateSql = "UPDATE Mission SET place = ?, etat = ?, benevole_email = ? WHERE intitule = ? AND demandeur_email = ?";
                         try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                             updateStmt.setString(1, mission.getPlace().name());
@@ -151,6 +235,11 @@ public class AllMissions {
                     }
                 }
             }
+
+            // Recharge les missions depuis la base pour synchroniser avec la mémoire
+            loadMissionsFromDatabase();
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -167,8 +256,65 @@ public class AllMissions {
         return null;
     }
 
+    public void enregistrerAvis(Avis avis) {
+        try {
+            String sql = "INSERT INTO Avis (comment, note, email_benevole) VALUES (?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, avis.getComment());
+            stmt.setInt(2, avis.getNote());
+            stmt.setString(3, avis.getBenevole().getEmail());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Avis> loadAvisForBenevole(String emailBenevole) {
+        List<Avis> avisList = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM Avis WHERE email_benevole = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, emailBenevole);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Avis avis = new Avis(getBenevoleByEmail(emailBenevole));
+                avis.setComment(rs.getString("comment"));
+                avis.setNote(rs.getInt("note"));
+                avisList.add(avis);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return avisList;
+    }
+
+
+
     // Méthode pour compter le nombre de missions
+
+
+
     public int countMissions() {
         return missions.size();
     }
+
+    // Nouvelle méthode : clearMissions
+    public void clearMissions() {
+        missions.clear();
+        try {
+            String sql = "DELETE FROM Mission";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+
+
+
+

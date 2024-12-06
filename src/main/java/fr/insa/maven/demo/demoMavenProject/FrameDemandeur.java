@@ -11,6 +11,9 @@ import javax.swing.*;
 public class FrameDemandeur extends JFrame {
     private  AllMissions allMissions; // Instance de AllMissions
     private Demandeur demandeur;
+
+    private JButton rateButton; // Bouton pour noter une mission
+
     private DefaultListModel<Mission> missionListModel; // Modèle de la liste
     private JList<Mission> missionList; // Liste pour afficher les missions
     private JButton addButton; // Bouton pour ajouter une mission
@@ -22,6 +25,7 @@ public class FrameDemandeur extends JFrame {
         this.allMissions = AllMissions.getInstance();
         this.missionListModel = new DefaultListModel<>();
         this.missionList = new JList<>(missionListModel);
+        this.rateButton = new JButton("Noter une mission");
         this.addButton = new JButton("Ajouter une mission");
         this.deleteButton = new JButton("Supprimer une mission");
 
@@ -40,10 +44,15 @@ public class FrameDemandeur extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
 
         // Panel pour les boutons en bas
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // Utilisation d'un GridLayout pour une organisation flexible des boutons
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 0)); // 1 ligne, 3 colonnes, avec un espace horizontal de 10px
+
         buttonPanel.add(addButton);
+        buttonPanel.add(rateButton);
         buttonPanel.add(deleteButton);
+
         add(buttonPanel, BorderLayout.SOUTH);
+
 
         // Configuration du bouton d'ajout
         addButton.addActionListener(new ActionListener() {
@@ -60,19 +69,32 @@ public class FrameDemandeur extends JFrame {
                 deleteMission();
             }
         });
+        rateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rateMission();
+            }
+        });
+
 
         // Initialiser l'affichage des missions
+        allMissions.loadMissionsFromDatabase();
         updateMissionList();
     }
 
     // Méthode pour mettre à jour la liste des missions affichées
     private void updateMissionList() {
-        missionListModel.clear(); // Effacer les éléments existants
+        missionListModel.clear(); // On vide le modèle avant de le remplir pour éviter les doublons
+
         for (Mission mission : allMissions.getMissions()) {
-            if (mission.getDemandeur().equals(this.demandeur)){
-            missionListModel.addElement(mission); // Ajouter chaque mission au modèle
-        }}
+            // Vérifie si la mission appartient au demandeur connecté
+            if (mission.getDemandeur() != null && mission.getDemandeur().getEmail().equals(this.demandeur.getEmail())) {
+                missionListModel.addElement(mission);
+            }
+        }
+       // System.out.println("Missions affichées pour le demandeur " + demandeur.getEmail() + ": " + missionListModel.size());
     }
+
     // Ajout dans la classe FrameDemandeur
     public DefaultListModel<Mission> getMissionListModel() {
         return missionListModel;
@@ -125,6 +147,59 @@ public class FrameDemandeur extends JFrame {
         }
     }
 
+    // Méthode pour noter une mission
+    private void rateMission() {
+        Mission selectedMission = missionList.getSelectedValue();
+        if (selectedMission == null) {
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner une mission à noter.", "Erreur", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Saisie de la note (0 à 5)
+        String noteInput = JOptionPane.showInputDialog(this, "Entrez une note pour cette mission (0 à 5) :");
+        if (noteInput == null || noteInput.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vous devez entrer une note.", "Erreur", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int note;
+        try {
+            note = Integer.parseInt(noteInput);
+            if (note < 0 || note > 5) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Veuillez entrer un entier entre 0 et 5.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Saisie du commentaire
+        String comment = JOptionPane.showInputDialog(this, "Entrez votre avis sur cette mission :");
+        if (comment == null || comment.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vous devez entrer un avis.", "Erreur", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Création de l'avis
+        Avis avis = new Avis(selectedMission.getBenevole());
+        avis.setNote(note);
+        avis.setComment(comment);
+
+
+        // Ajouter l'avis au bénévole ou à une autre entité
+        Benevole benevole = selectedMission.getBenevole(); // Récupère le bénévole de la mission
+        if (benevole != null) {
+            benevole.addAvis(avis);
+            allMissions.removeMission(selectedMission);
+            updateMissionList();
+            JOptionPane.showMessageDialog(this, "Votre avis a été ajouté avec succès.", "Succès", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Cette mission n'est pas associée à un bénévole.", "Erreur", JOptionPane.WARNING_MESSAGE);
+        }
+
+    }
+
+
     // Renderer personnalisé pour afficher chaque mission sans bouton de suppression
     private class MissionCellRenderer extends JPanel implements ListCellRenderer<Mission> {
         private JLabel missionLabel;
@@ -163,9 +238,9 @@ public class FrameDemandeur extends JFrame {
 
         Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", Place.HOME, "alice@example.com", "password123");
         Demandeur demandeur2 = new Demandeur("Alieece", "Deeupont", "Besoin dee'aide", "Jareedin", Place.HOSPITAL, "alice@exeample.com", "passweeord123");
-
-        Mission mission1 = new Mission("jardin",  demandeur, Place.HOME);
-        Mission mission2 = new Mission("piscine",  demandeur2, Place.WORKPLACE);
+        Benevole benevole = new Benevole ("Elian", "Boaglio", "lalalla", "mdp","agriculteur");
+        Mission mission1 = new Mission(MissionEtat.INVALIDE,"jardin",  demandeur, Place.HOME);
+        Mission mission2 = new Mission(MissionEtat.VALIDEE,"piscine",  demandeur, Place.WORKPLACE, benevole);
         Mission mission3 = new Mission("canapé",  demandeur, Place.HOME);
         Mission mission4 = new Mission("bobo",  demandeur2, Place.HOSPITAL);
         Mission mission5 = new Mission("mamie",  demandeur, Place.EHPAD);

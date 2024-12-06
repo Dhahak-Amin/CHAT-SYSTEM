@@ -12,7 +12,22 @@ public class ConnectionManager {
     private static final String USER = "projet_gei_012";
     private static final String PASS = "dith1Que";
 
+    private static ConnectionManager instance;
     private Connection conn;
+
+    public static ConnectionManager getInstance() {
+        if (instance == null) {
+            synchronized (ConnectionManager.class) {
+                if (instance == null) {
+                    instance = new ConnectionManager();
+                }
+            }
+        }
+        return instance;
+    }
+    public Connection getConnection() {
+        return conn;
+    }
 
     public ConnectionManager() {
         try {
@@ -49,31 +64,37 @@ public class ConnectionManager {
                         registerDemandeur(email, password);
                     }
                     Demandeur demandeur = getDemandeurByEmail(email);
-                    AllMissions allMissions = AllMissions.getInstance();
                     SwingUtilities.invokeLater(() -> {
-                        FrameDemandeur frameDemandeur = new FrameDemandeur( demandeur);
+                        FrameDemandeur frameDemandeur = new FrameDemandeur(demandeur);
                         frameDemandeur.setVisible(true);
                     });
                     break;
+
                 case "benevole":
                     if (!isBenevole(email)) {
                         registerBenevole(email, password);
                     }
                     Benevole benevole = getBenevoleByEmail(email);
-
                     SwingUtilities.invokeLater(() -> {
                         FrameBenevole frameBenevole = new FrameBenevole(AllMissions.getInstance(), benevole);
                         frameBenevole.setVisible(true);
                     });
                     break;
+
                 case "validateur":
                     if (!isValidateur(email)) {
                         registerValidateur(email, password);
                     }
-                    JOptionPane.showMessageDialog(null, "Bienvenue, Validateur ! Cette fonctionnalité sera bientôt disponible.", "Information", JOptionPane.INFORMATION_MESSAGE);
+                    Validateur validateur = getValidateurByEmail(email);
+                    SwingUtilities.invokeLater(() -> {
+                        FrameValidateur frameValidateur = new FrameValidateur(AllMissions.getInstance(), validateur);
+                        frameValidateur.setVisible(true);
+                    });
                     break;
+
                 default:
                     JOptionPane.showMessageDialog(null, "Rôle inconnu ! Merci de vérifier et réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    break;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -195,6 +216,25 @@ public class ConnectionManager {
                             rs.getString("email"),
                             rs.getString("password"),
                             rs.getString("metier")
+                    );
+                }
+            }
+        }
+        throw new SQLException("Bénévole non trouvé !");
+    }
+
+    private Validateur getValidateurByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM Validateur WHERE email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Validateur(
+                            rs.getString("firstname"),
+                            rs.getString("lastname"),
+                            rs.getString("email"),
+                            rs.getString("password")
+
                     );
                 }
             }

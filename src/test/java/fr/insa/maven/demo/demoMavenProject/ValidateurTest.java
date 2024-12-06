@@ -26,9 +26,23 @@ public class ValidateurTest {
         conn = DriverManager.getConnection(DB_URL, USER, PASS);
         conn.setAutoCommit(false); // Commence une transaction pour isoler les tests
 
-        // Nettoyer la table Validateur avant chaque test
-        try (PreparedStatement clearStmt = conn.prepareStatement("TRUNCATE TABLE Validateur")) {
-            clearStmt.executeUpdate();
+        // Désactiver temporairement les contraintes de clés étrangères
+        try (PreparedStatement disableFK = conn.prepareStatement("SET FOREIGN_KEY_CHECKS = 0")) {
+            disableFK.executeUpdate();
+        }
+
+        // Nettoyer les tables
+        try (PreparedStatement clearMission = conn.prepareStatement("DELETE FROM Mission")) {
+            clearMission.executeUpdate();
+        }
+
+        try (PreparedStatement clearValidateur = conn.prepareStatement("DELETE FROM Validateur")) {
+            clearValidateur.executeUpdate();
+        }
+
+        // Réactiver les contraintes de clés étrangères
+        try (PreparedStatement enableFK = conn.prepareStatement("SET FOREIGN_KEY_CHECKS = 1")) {
+            enableFK.executeUpdate();
         }
     }
 

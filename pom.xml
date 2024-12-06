@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.insa.maven.demo</groupId>
 	<artifactId>demoMavenProject</artifactId>
@@ -10,9 +9,11 @@
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
+		<!-- JUnit 5 pour les tests -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
@@ -25,16 +26,25 @@
 			<version>5.10.0</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- MySQL Connector -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.33</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>2.2.220</version>  <!-- Utilise la dernière version stable -->
+			<scope>test</scope>  <!-- Optionnel si tu l'utilises uniquement pour les tests -->
 		</dependency>
 
 	</dependencies>
 
 	<build>
 		<plugins>
+			<!-- Plugin pour exécuter les tests -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -45,6 +55,8 @@
 					</includes>
 				</configuration>
 			</plugin>
+
+			<!-- Plugin pour construire le jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -61,12 +73,13 @@
 	</build>
 
 	<profiles>
+		<!-- Profil pour la base MySQL -->
 		<profile>
-			<id>test</id>
+			<id>mysql</id>
 			<properties>
-				<db.url>jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012</db.url>
-				<db.user>projet_gei_012</db.user>
-				<db.password>dith1Que</db.password>
+				<db.url>jdbc:mysql://localhost:3306/testdb</db.url>
+				<db.user>root</db.user>
+				<db.password>password</db.password>
 			</properties>
 		</profile>
 	</profiles>

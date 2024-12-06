@@ -12,6 +12,7 @@ public class Validateur extends User {
     public Validateur(String firstname, String lastname, String email, String password, Connection conn ) {
         super(firstname, lastname, email, password);
         this.conn = conn; // Initialiser la connexion
+        this.setAllMissions(AllMissions.getInstance()); // Initialiser AllMissions ici
     }
     public Validateur(String firstname, String lastname, String email, String password ) {
         super(firstname, lastname, email, password);
@@ -27,8 +28,7 @@ public class Validateur extends User {
         if (missionPlace == Place.OTHER) {
             mission.setEtat(MissionEtat.VALIDEE);
             mission.setBenevole(null);
-            this.getAllMissions().enregistrerMission(mission);
-            // Aucun bénévole attribué
+            this.getAllMissions().addMission(mission);// Aucun bénévole attribué
              // Enregistrer la mission validée
             //System.out.println("Mission validée automatiquement pour emplacement : " + missionPlace);
             return;
@@ -42,7 +42,7 @@ public class Validateur extends User {
                 benevoleAttribue.acceptMission(mission); // Le bénévole accepte la mission
                 mission.setEtat(MissionEtat.VALIDEE);
                 mission.setBenevole(benevoleAttribue); // Assignation du bénévole à la mission
-                this.getAllMissions().enregistrerMission(mission); // Enregistrer la mission validée
+                this.getAllMissions().addMission(mission); // Enregistrer la mission validée
                // System.out.println("Mission validée et attribuée à " + benevoleAttribue.getFirstname() + " " + benevoleAttribue.getLastname());
             } else {
               //  System.out.println("Aucun bénévole disponible pour l'emplacement choisi ou avec le métier requis.");

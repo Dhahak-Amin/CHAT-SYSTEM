@@ -10,6 +10,9 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<db.url>jdbc:mysql://localhost:3306/testdb</db.url> <!-- Par défaut -->
+		<db.user>root</db.user>
+		<db.password></db.password>
 	</properties>
 
 	<dependencies>
@@ -33,13 +36,14 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.33</version>
 		</dependency>
+
+		<!-- H2 Database pour les tests -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>2.2.220</version>  <!-- Utilise la dernière version stable -->
-			<scope>test</scope>  <!-- Optionnel si tu l'utilises uniquement pour les tests -->
+			<version>2.2.220</version>
+			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -56,24 +60,35 @@
 				</configuration>
 			</plugin>
 
-			<!-- Plugin pour construire le jar -->
+			<!-- Plugin pour construire le JAR -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.3.0</version>
 				<configuration>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>fr.insa.maven.demo.demoMavenProject.Main</mainClass>
+							<mainClass>fr.insa.maven.demo.demoMavenProject.Main</mainClass> <!-- Remplace par la classe principale -->
 						</manifest>
 					</archive>
+				</configuration>
+			</plugin>
+
+			<!-- Plugin pour exécuter une classe principale -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<mainClass>fr.insa.maven.demo.demoMavenProject.Main</mainClass> <!-- Classe principale -->
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
 	<profiles>
-		<!-- Profil pour la base MySQL -->
+		<!-- Profil MySQL -->
 		<profile>
 			<id>mysql</id>
 			<properties>

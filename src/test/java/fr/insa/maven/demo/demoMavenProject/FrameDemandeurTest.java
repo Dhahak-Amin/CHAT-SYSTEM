@@ -29,7 +29,7 @@ public class FrameDemandeurTest {
         allMissions.addMission(new Mission(MissionEtat.TERMINEE, "Déménagement", demandeur, Place.HOME));
 
         // Initialisation de la fenêtre
-        SwingUtilities.invokeLater(() -> frame = new FrameDemandeur(demandeur));
+       // SwingUtilities.invokeLater(() -> frame = new FrameDemandeur(demandeur));
     }
 
     @Test

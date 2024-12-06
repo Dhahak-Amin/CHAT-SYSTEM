@@ -17,6 +17,12 @@ public class Benevole extends User {
         this.acceptedMissions = new ArrayList<>();
         this.metier = metier;
     }
+    // Constructeur
+    public Benevole(String firstname, String lastname, String email, String password) {
+        super(firstname, lastname, email, password);
+        this.listeAvis = new ArrayList<>();
+        this.acceptedMissions = new ArrayList<>();
+    }
 
     // Getter pour la liste des avis
     public List<Avis> getListeAvis() {

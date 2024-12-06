@@ -1,145 +1,80 @@
 package fr.insa.maven.demo.demoMavenProject;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidateurTest {
 
     private Connection conn;
-
-    // Informations de connexion à la base de données
-    static final String DB_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012";
-    static final String USER = "projet_gei_012";
-    static final String PASS = "dith1Que";
+    private Validateur validateur;
 
     @BeforeEach
-    public void setUp() throws SQLException {
-        conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        conn.setAutoCommit(false); // Commence une transaction pour isoler les tests
+    public void setUp() throws Exception {
+        // Initialisation de la base de données locale
+        DatabaseManager.ensureDatabaseExists();
+        DatabaseManager.executeSqlFileWithCli(DatabaseManager.SQL_FILE_PATH);
 
-        // Désactiver temporairement les contraintes de clés étrangères
-        try (PreparedStatement disableFK = conn.prepareStatement("SET FOREIGN_KEY_CHECKS = 0")) {
-            disableFK.executeUpdate();
-        }
+        // Connexion à la base locale
+        conn = DatabaseManager.getConnection();
 
-        // Nettoyer les tables
-        try (PreparedStatement clearMission = conn.prepareStatement("DELETE FROM Mission")) {
-            clearMission.executeUpdate();
-        }
-
-        try (PreparedStatement clearValidateur = conn.prepareStatement("DELETE FROM Validateur")) {
-            clearValidateur.executeUpdate();
-        }
-
-        // Réactiver les contraintes de clés étrangères
-        try (PreparedStatement enableFK = conn.prepareStatement("SET FOREIGN_KEY_CHECKS = 1")) {
-            enableFK.executeUpdate();
-        }
-    }
-
-    @AfterEach
-    public void tearDown() throws SQLException {
-        if (conn != null) {
-            conn.rollback(); // Annule les modifications pour ce test
-            conn.close();
-        }
+        // Création du validateur
+        validateur = new Validateur("John", "Doe", "validateur@example.com", "password123", conn);
     }
 
     @Test
-    public void testAjoutValidateurDansBaseDeDonnees() throws SQLException {
-        // Création d'un validateur
-        Validateur validateur = new Validateur("Test", "User", "bruh@example.com", "password123", conn);
+    public void testValiderMissionSansBenevole() {
+        // Création d'une mission sans bénévole nécessaire
+        Mission mission = new Mission("Assistance générale",
+                new Demandeur("Alice", "Smith", "Besoin d'aide", "Assistance", Place.OTHER, "alice@example.com", "pass123"),
+                Place.OTHER);
 
-        // Ajout dans la base de données
-        try (PreparedStatement insertStmt = conn.prepareStatement(
-                "INSERT INTO Validateur (email, firstname, lastname, password) VALUES (?, ?, ?, ?)")) {
-            insertStmt.setString(1, validateur.getEmail());
-            insertStmt.setString(2, validateur.getFirstname());
-            insertStmt.setString(3, validateur.getLastname());
-            insertStmt.setString(4, validateur.getPassword());
-            int rowsInserted = insertStmt.executeUpdate();
-            assertEquals(1, rowsInserted, "Une seule ligne doit être insérée");
-        }
+        // Valider la mission
+        validateur.validerMission(mission, new ArrayList<>());
 
-        // Vérification que le validateur a été ajouté
-        try (PreparedStatement selectStmt = conn.prepareStatement(
-                "SELECT firstname, lastname FROM Validateur WHERE email = ?")) {
-            selectStmt.setString(1, validateur.getEmail());
-            try (ResultSet rs = selectStmt.executeQuery()) {
-                assertTrue(rs.next(), "Le validateur doit être présent dans la base");
-                assertEquals(validateur.getFirstname(), rs.getString("firstname"));
-                assertEquals(validateur.getLastname(), rs.getString("lastname"));
-            }
-        }
+        // Vérifications
+        assertEquals(MissionEtat.VALIDEE, mission.getEtat(), "La mission doit être validée automatiquement pour l'emplacement OTHER.");
+        assertNull(mission.getBenevole(), "Aucun bénévole ne doit être assigné.");
     }
 
     @Test
-    public void testAjoutValidateurAvecEmailDuplique() throws SQLException {
-        // Création d'un validateur
-        Validateur validateur = new Validateur("Test", "User", "duplicate@example.com", "password123", conn);
+    public void testValiderMissionAvecBenevole() {
+        // Création d'une mission avec un emplacement nécessitant un bénévole
+        Mission mission = new Mission("Soins médicaux",
+                new Demandeur("Alice", "Smith", "Besoin de soins", "Soins médicaux", Place.HOSPITAL, "alice@example.com", "pass123"),
+                Place.HOSPITAL);
 
-        // Ajouter un validateur pour la première fois
-        try (PreparedStatement insertStmt = conn.prepareStatement(
-                "INSERT INTO Validateur (email, firstname, lastname, password) VALUES (?, ?, ?, ?)")) {
-            insertStmt.setString(1, validateur.getEmail());
-            insertStmt.setString(2, validateur.getFirstname());
-            insertStmt.setString(3, validateur.getLastname());
-            insertStmt.setString(4, validateur.getPassword());
-            int rowsInserted = insertStmt.executeUpdate();
-            assertEquals(1, rowsInserted, "Une seule ligne doit être insérée");
-        }
+        // Liste de bénévoles
+        List<Benevole> benevoles = new ArrayList<>();
+        benevoles.add(new Benevole("Bob", "Johnson", "bob@example.com", "password", "Soins médicaux"));
+        benevoles.add(new Benevole("Tom", "Clark", "tom@example.com", "password", "Ménage"));
 
-        // Tentative d'ajout d'un validateur avec le même email
-        try (PreparedStatement insertStmt = conn.prepareStatement(
-                "INSERT INTO Validateur (email, firstname, lastname, password) VALUES (?, ?, ?, ?)")) {
-            insertStmt.setString(1, validateur.getEmail());
-            insertStmt.setString(2, "Duplicate");
-            insertStmt.setString(3, "User");
-            insertStmt.setString(4, "password456");
-            assertThrows(SQLException.class, insertStmt::executeUpdate,
-                    "Une exception SQL doit être levée en cas de duplication d'email");
-        }
+        // Valider la mission
+        validateur.validerMission(mission, benevoles);
+
+        // Vérifications
+        assertEquals(MissionEtat.VALIDEE, mission.getEtat(), "La mission doit être validée.");
+        assertNotNull(mission.getBenevole(), "Un bénévole doit être assigné.");
+        assertEquals("bob@example.com", mission.getBenevole().getEmail(), "Le bon bénévole doit être assigné.");
     }
 
     @Test
-    public void testSuppressionValidateur() throws SQLException {
-        // Création d'un validateur
-        Validateur validateur = new Validateur("Test", "User", "delete@example.com", "password123", conn);
+    public void testValiderMissionAvecEmplacementInvalide() {
+        // Création d'une mission avec un emplacement invalide
+        Mission mission = new Mission("Mission inconnue",
+                new Demandeur("Alice", "Smith", "Besoin d'aide", "Divers", null, "alice@example.com", "pass123"),
+                null);
 
-        // Ajouter un validateur
-        try (PreparedStatement insertStmt = conn.prepareStatement(
-                "INSERT INTO Validateur (email, firstname, lastname, password) VALUES (?, ?, ?, ?)")) {
-            insertStmt.setString(1, validateur.getEmail());
-            insertStmt.setString(2, validateur.getFirstname());
-            insertStmt.setString(3, validateur.getLastname());
-            insertStmt.setString(4, validateur.getPassword());
-            insertStmt.executeUpdate();
-        }
+        // Valider la mission
+        validateur.validerMission(mission, new ArrayList<>());
 
-        // Supprimer le validateur
-        try (PreparedStatement deleteStmt = conn.prepareStatement(
-                "DELETE FROM Validateur WHERE email = ?")) {
-            deleteStmt.setString(1, validateur.getEmail());
-            int rowsDeleted = deleteStmt.executeUpdate();
-            assertEquals(1, rowsDeleted, "Une seule ligne doit être supprimée");
-        }
-
-        // Vérification que le validateur a été supprimé
-        try (PreparedStatement selectStmt = conn.prepareStatement(
-                "SELECT firstname, lastname FROM Validateur WHERE email = ?")) {
-            selectStmt.setString(1, validateur.getEmail());
-            try (ResultSet rs = selectStmt.executeQuery()) {
-                assertFalse(rs.next(), "Le validateur ne doit plus être présent dans la base");
-            }
-        }
+        // Vérifications
+        assertEquals(MissionEtat.INVALIDE, mission.getEtat(), "La mission doit être invalidée pour un emplacement invalide.");
+        assertNull(mission.getBenevole(), "Aucun bénévole ne doit être assigné.");
     }
 }

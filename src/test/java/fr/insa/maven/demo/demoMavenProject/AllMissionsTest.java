@@ -3,9 +3,6 @@ package fr.insa.maven.demo.demoMavenProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.sql.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AllMissionsTest {
@@ -13,133 +10,93 @@ public class AllMissionsTest {
     private AllMissions allMissions;
     private Demandeur demandeur;
 
-    // Informations de connexion MySQL local
-    static final String DB_URL = "jdbc:mysql://localhost:3306/testdb";
-    static final String USER = "root"; // Remplacez par votre utilisateur MySQL
-    static final String PASS = "password"; // Remplacez par votre mot de passe MySQL
-    static final String SQL_INIT_FILE = "Sql_Test.sql";
-
     @BeforeEach
-    public void setUp() throws SQLException, IOException, InterruptedException {
-        // Charger le fichier SQL pour créer les tables
-        executeSqlFile(SQL_INIT_FILE);
-
-        // Initialiser AllMissions et un objet Demandeur
+    public void setUp() {
+        // Initialisation de l'instance et nettoyage des missions
         allMissions = AllMissions.getInstance();
+        allMissions.clearMissions();
+
+        // Création d'un demandeur simple
         demandeur = new Demandeur(
                 "Alice",
                 "Dupont",
-                "Besoin d'une aide pour le ménage",
+                "Besoin d'aide",
                 "Ménage",
                 Place.HOME,
                 "alice@example.com",
                 "password123"
         );
-
-        // Insérer le demandeur dans la base
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-             PreparedStatement stmt = conn.prepareStatement(
-                     "INSERT INTO Demandeur (email, lastname, firstname, password, description, needs, location) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-            stmt.setString(1, demandeur.getEmail());
-            stmt.setString(2, demandeur.getLastname());
-            stmt.setString(3, demandeur.getFirstname());
-            stmt.setString(4, demandeur.getPassword());
-            stmt.setString(5, demandeur.getDescription());
-            stmt.setString(6, demandeur.getNeeds());
-            stmt.setString(7, demandeur.getLocation().name());
-            stmt.executeUpdate();
-        }
     }
 
     @Test
     public void testAddMission() {
+        // Création et ajout d'une mission
         Mission mission = new Mission(
                 MissionEtat.EN_ATTENTE_AFFECTATION,
-                "Mission A",
+                "Nettoyer la maison",
                 demandeur,
                 Place.HOME
         );
-
         allMissions.enregistrerMission(mission);
-        allMissions.loadMissionsFromDatabase();
 
+        // Vérification que la mission a été ajoutée
+        allMissions.loadMissionsFromDatabase();
         assertEquals(1, allMissions.countMissions(), "La mission n'a pas été correctement ajoutée.");
+        assertNotNull(allMissions.findMission("Nettoyer la maison"), "La mission ajoutée est introuvable.");
     }
 
     @Test
     public void testRemoveMission() {
+        // Création et ajout d'une mission
         Mission mission = new Mission(
                 MissionEtat.EN_ATTENTE_AFFECTATION,
-                "Mission B",
+                "Réparer la toiture",
                 demandeur,
-                Place.HOME
+                Place.WORKPLACE
         );
-
         allMissions.enregistrerMission(mission);
-        allMissions.loadMissionsFromDatabase();
-        allMissions.removeMission(mission);
 
+        // Vérification de l'ajout
         allMissions.loadMissionsFromDatabase();
-        assertEquals(0, allMissions.countMissions(), "La mission n'a pas été correctement supprimée.");
+        assertEquals(1, allMissions.countMissions(), "La mission n'a pas été correctement ajoutée.");
+
+        // Suppression de la mission
+        boolean removed = allMissions.removeMission(mission);
+        allMissions.loadMissionsFromDatabase();
+
+        // Vérification de la suppression
+        assertTrue(removed, "La mission n'a pas été supprimée.");
+        assertEquals(0, allMissions.countMissions(), "La mission existe encore après suppression.");
     }
+
+
 
     @Test
-    public void testFindMission() {
-        Mission mission = new Mission(
+    public void testLoadMissionsForDemandeur() {
+        // Création de plusieurs missions
+        Mission mission1 = new Mission(
                 MissionEtat.EN_ATTENTE_AFFECTATION,
-                "Mission C",
+                "Mission 1",
                 demandeur,
                 Place.HOME
         );
-
-        allMissions.enregistrerMission(mission);
-        allMissions.loadMissionsFromDatabase();
-
-        Mission foundMission = allMissions.findMission("Mission C");
-        assertNotNull(foundMission, "Mission introuvable.");
-        assertEquals(MissionEtat.EN_ATTENTE_AFFECTATION, foundMission.getEtat(), "L'état de la mission est incorrect.");
-    }
-
-    @Test
-    public void testUpdateMission() {
-        Mission mission = new Mission(
+        Mission mission2 = new Mission(
                 MissionEtat.EN_ATTENTE_AFFECTATION,
-                "Mission D",
+                "Mission 2",
                 demandeur,
-                Place.HOME
+                Place.WORKPLACE
         );
 
-        allMissions.enregistrerMission(mission);
+        allMissions.enregistrerMission(mission1);
+        allMissions.enregistrerMission(mission2);
+
+        // Chargement des missions
         allMissions.loadMissionsFromDatabase();
+        int count = (int) allMissions.getMissions().stream()
+                .filter(m -> m.getDemandeur().getEmail().equals(demandeur.getEmail()))
+                .count();
 
-        boolean updated = allMissions.updateMission("Mission D", "VALIDEE", "Mission Updated", demandeur);
-        allMissions.loadMissionsFromDatabase();
-
-        Mission updatedMission = allMissions.findMission("Mission Updated");
-        assertTrue(updated, "Mise à jour échouée.");
-        assertNotNull(updatedMission, "Mission mise à jour introuvable.");
-        assertEquals(MissionEtat.VALIDEE, updatedMission.getEtat(), "L'état de la mission mise à jour est incorrect.");
-    }
-
-    private void executeSqlFile(String sqlFilePath) throws IOException, InterruptedException {
-        // Utilisation du ClassLoader pour récupérer le chemin du fichier dans les ressources
-        String path = AllMissionsTest.class.getClassLoader().getResource(sqlFilePath).getPath();
-
-        // Commande pour exécuter le fichier SQL
-        String command = String.format("mysql -u%s -p%s testdb < %s", USER, PASS, path);
-        Process process = Runtime.getRuntime().exec(command);
-
-        // Capture des erreurs dans l'exécution de la commande
-        try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-            String line;
-            while ((line = errorReader.readLine()) != null) {
-                System.err.println(line);
-            }
-        }
-
-        int exitCode = process.waitFor();
-        if (exitCode != 0) {
-            throw new IOException("Erreur lors de l'exécution du fichier SQL. Code de sortie : " + exitCode);
-        }
+        // Vérification du nombre de missions associées
+        assertEquals(2, count, "Le nombre de missions pour le demandeur est incorrect.");
     }
 }

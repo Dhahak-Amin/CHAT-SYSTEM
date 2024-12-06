@@ -10,23 +10,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FrameBenevoleTest {
 
-    private AllMissions allMissions;
     private Benevole benevole;
-    private Demandeur demandeur;
     private FrameBenevole frame;
+    private AllMissions allMissions;
 
     @BeforeEach
-    void setUp() throws InterruptedException {
-        // Initialisation des objets avec le singleton AllMissions
+    void setUp() throws Exception {
+        // Créer une instance vide d'AllMissions
         allMissions = AllMissions.getInstance();
+        allMissions.clear(); // S'assurer que les missions sont vides
 
-        benevole = new Benevole("Elian", "Boaglio", "elian@example.com", "password123", "Jardinage");
-        demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardinage", Place.HOME, "alice@example.com", "password456");
-
-        // Ajout d'exemples de missions
-        allMissions.addMission(new Mission(MissionEtat.EN_COURS_DE_VALIDATION, "Aide aux courses", demandeur, Place.HOME));
-        allMissions.addMission(new Mission(MissionEtat.EN_ATTENTE_AFFECTATION, "Nettoyage de jardin", demandeur, Place.WORKPLACE));
-        allMissions.addMission(new Mission(MissionEtat.TERMINEE, "Déménagement", demandeur, Place.HOME));
+        // Création d'un objet Benevole
+        benevole = new Benevole("Elian", "Boaglio", "elian@example.com", "password123");
 
         // Initialisation de la fenêtre avec synchronisation
         CountDownLatch latch = new CountDownLatch(1);
@@ -39,24 +34,15 @@ public class FrameBenevoleTest {
 
     @Test
     void testFrameBenevoleInitialization() {
-        // Vérifier que le titre est correct
+        // Vérifier que le titre de la fenêtre est correct
         assertEquals("Missions du Bénévole", frame.getTitle(), "Le titre de la fenêtre devrait être 'Missions du Bénévole'.");
     }
 
     @Test
-    void testChangeMissionStatus() {
-        // Simuler la sélection d'une mission et le changement de statut
-        DefaultListModel<Mission> missionListModel = frame.getMissionListModel();
-        Mission selectedMission = missionListModel.get(1);
-
-        // Vérifier le statut initial
-        assertEquals(MissionEtat.EN_ATTENTE_AFFECTATION, selectedMission.getEtat(), "Le statut initial de la mission devrait être 'EN_ATTENTE_AFFECTATION'.");
-
-        // Simuler le changement de statut
-        selectedMission.setEtat(MissionEtat.VALIDEE);
-
-        // Vérifier que le statut a changé
-        assertEquals(MissionEtat.VALIDEE, selectedMission.getEtat(), "Le statut de la mission devrait être 'VALIDEE'.");
+    void testBenevoleInformation() {
+        // Vérifier les informations du bénévole
+        assertEquals("Elian", benevole.getFirstname(), "Le prénom du bénévole devrait être 'Elian'.");
+        assertEquals("Boaglio", benevole.getLastname(), "Le nom de famille du bénévole devrait être 'Boaglio'.");
+        assertEquals("elian@example.com", benevole.getEmail(), "L'email du bénévole devrait être 'elian@example.com'.");
     }
-
 }

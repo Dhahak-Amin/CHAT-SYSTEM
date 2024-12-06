@@ -1,13 +1,32 @@
 package fr.insa.maven.demo.demoMavenProject;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AvisTest {
+
+    private Connection conn;
+
+    @BeforeEach
+    public void setUp() {
+        // Initialiser la base de données
+        DatabaseManager.ensureDatabaseExists();
+        DatabaseManager.executeSqlFileWithCli(DatabaseManager.SQL_FILE_PATH);
+
+        // Récupérer la connexion
+        try {
+            conn = DatabaseManager.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
     void testCreateAvis() {
@@ -50,6 +69,7 @@ public class AvisTest {
         assertEquals("Très bonne cuisinière !", avisList.get(0).getComment(), "Le commentaire du premier avis devrait correspondre.");
         assertEquals(5, avisList.get(1).getNote(), "La note du deuxième avis devrait être 5.");
     }
+
 
     @Test
     void testSetInvalidNote() {

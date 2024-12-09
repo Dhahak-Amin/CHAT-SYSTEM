@@ -1,1 +1,96 @@
-/.metadata/
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.old
+*~
+
+# Maven specific
+target/
+!.gitkeep
+.mvn/
+dependency-reduced-pom.xml
+
+# IntelliJ IDEA specific
+.idea/
+*.iml
+out/
+
+# Eclipse specific
+.classpath
+.project
+.settings/
+
+# NetBeans specific
+nbproject/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Visual Studio Code specific
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
+Icon?
+
+# Compiled Java files
+*.class
+
+# Archives
+*.jar
+*.war
+*.ear
+
+# Swing Designer files
+*.form
+
+# Database files
+*.db
+*.sqlite
+*.sql
+
+# Draw.io diagrams
+*.drawio
+
+# Test output
+test-output/
+
+# Build directories
+bin/
+build/
+
+# Local environment and configuration
+*.env
+*.properties
+*.config
+
+# Sensitive keys and certificates
+*.crt
+*.pem
+*.key
+
+# Application-specific locks
+*.lock
+*.pid
+*.seed
+
+# Generated documentation
+*.generated
+*.gen
+
+# Ignore all CSVs by default (useful if exporting data)
+*.csv
+
+# Ignore temporary files from tests or development
+*.backup
+
+# Node.js dependencies)
+node_modules/
+
+# Ignore specific sensitive files for the project
+src/test/resources/Sql_Test.sql

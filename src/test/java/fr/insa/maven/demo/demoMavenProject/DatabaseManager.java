@@ -3,18 +3,17 @@ package fr.insa.maven.demo.demoMavenProject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Arrays;
 
 public class DatabaseManager {
 
     // Informations de connexion au serveur MySQL
     private static final String SERVER_URL = "jdbc:mysql://localhost:3306/";
     private static final String DATABASE_NAME = "test_db";
-    static final String DB_URL = SERVER_URL + DATABASE_NAME;
-     static final String USER = "root";
-     static final String PASS = "root";
+    public static final String DB_URL = SERVER_URL + DATABASE_NAME;
+    public static final String USER = "root"; // ou ton utilisateur MySQL
+    public static final String PASS = "root"; // ou ton mot de passe MySQL
 
     // Chemin du fichier SQL d'initialisation
     public static final String SQL_FILE_PATH = "src/test/resources/Sql_Test.sql";
@@ -22,7 +21,7 @@ public class DatabaseManager {
     // Méthode pour s'assurer que la base de données existe
     public static void ensureDatabaseExists() {
         try (Connection conn = DriverManager.getConnection(SERVER_URL, USER, PASS);
-             var stmt = conn.createStatement()) {
+             Statement stmt = conn.createStatement()) {
             String createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
             stmt.executeUpdate(createDatabaseQuery);
             System.out.println("Base de données vérifiée ou créée : " + DATABASE_NAME);
@@ -32,13 +31,23 @@ public class DatabaseManager {
         }
     }
 
-    // Méthode pour exécuter un fichier SQL via MySQL CLI
+    // Méthode pour exécuter un fichier SQL via MySQL CLI avec gestion multi-OS
     public static void executeSqlFileWithCli(String sqlFilePath) {
-        String mysqlPath = "\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe\"";
-        String command = String.format("%s -u %s -p%s %s < %s", mysqlPath, USER, PASS, DATABASE_NAME, sqlFilePath);
+        String osName = System.getProperty("os.name").toLowerCase();
+        String[] command;
+
+        if (osName.contains("win")) {
+            // Commande Windows
+            command = new String[]{"cmd.exe", "/c", "\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe\" -u " + USER + " -p" + PASS + " " + DATABASE_NAME + " < " + sqlFilePath};
+        } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("mac")) {
+            // Commande Linux/MacOS
+            command = new String[]{"/bin/sh", "-c", "mysql -u " + USER + " -p" + PASS + " " + DATABASE_NAME + " < " + sqlFilePath};
+        } else {
+            throw new RuntimeException("Système d'exploitation non supporté : " + osName);
+        }
 
         try {
-            Process process = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", command});
+            Process process = Runtime.getRuntime().exec(command);
 
             try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                  BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
@@ -71,4 +80,42 @@ public class DatabaseManager {
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
+
+    // Méthode pour vérifier si une table existe
+    public static boolean checkTableExists(String tableName) {
+        String checkTableQuery = "SHOW TABLES LIKE ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(checkTableQuery)) {
+            stmt.setString(1, tableName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next(); // Si une table correspond au nom, on retourne true
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static void cleanDatabase() {
+        String[] cleanSQL = {
+                "DELETE FROM Avis",
+                "DELETE FROM Mission",
+                "DELETE FROM Validateur",
+                "DELETE FROM Benevole",
+                "DELETE FROM Demandeur",
+                "DELETE FROM User"
+        };
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+            // Exécuter chaque requête DELETE séparément
+            for (String query : cleanSQL) {
+                stmt.executeUpdate(query);  // Exécuter chaque requête pour nettoyer la base de données
+            }
+            System.out.println("Base de données nettoyée.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -7,61 +7,80 @@ public class Main {
     public static void main(String[] args) {
         ConnectionManager connectionManager = new ConnectionManager();
 
-        // Sélection du rôle utilisateur
-        String[] roles = {"Bénévole", "Demandeur", "Validateur", "Administrateur"};
-        String selectedRole = (String) JOptionPane.showInputDialog(
-                null,
-                "Choisissez votre rôle :",
-                "Sélection de rôle",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                roles,
-                roles[0]
-        );
+        // Charger les missions depuis la base de données
+        AllMissions.getInstance().loadMissionsFromDatabase();
 
-        if (selectedRole == null) {
-            JOptionPane.showMessageDialog(null, "Programme terminé.", "Au revoir", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
 
-        try {
-            // Authentification ou enregistrement selon le rôle
-            String email = JOptionPane.showInputDialog("Entrez votre email :");
-            String password = JOptionPane.showInputDialog("Entrez votre mot de passe :");
 
-            switch (selectedRole) {
-                case "Bénévole":
-                    connectionManager.authenticateOrRegisterUser(email, password, "benevole");
-                    // L'interface FrameBenevole est déjà gérée dans ConnectionManager
-                    break;
+            // Menu principal
+            String[] roles = {"Bénévole", "Demandeur", "Validateur", "Administrateur", "Quitter"};
+            String selectedRole = (String) JOptionPane.showInputDialog(
+                    null,
+                    "Choisissez votre rôle ou quittez :",
+                    "Menu principal",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    roles,
+                    roles[0]
+            );
 
-                case "Demandeur":
-                    connectionManager.authenticateOrRegisterUser(email, password, "demandeur");
-                    // L'interface FrameDemandeur est déjà gérée dans ConnectionManager
-                    break;
+            if (selectedRole == null || selectedRole.equals("Quitter")) {
+                // Si l'utilisateur quitte, affiche un message d'au revoir et termine la boucle
+                JOptionPane.showMessageDialog(null, "Programme terminé. Au revoir !", "Au revoir", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
 
-                case "Validateur":
-                    connectionManager.authenticateOrRegisterUser(email, password, "validateur");
-                    JOptionPane.showMessageDialog(null, "Bienvenue, Validateur ! Fonctionnalité bientôt disponible.", "Info", JOptionPane.INFORMATION_MESSAGE);
-                    break;
-
-                case "Administrateur":
-                    launchAdminFrame(connectionManager);
-                    break;
-
-                default:
-                    JOptionPane.showMessageDialog(null, "Rôle inconnu.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    break;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erreur : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-        }
+
+            // Gestion des rôles
+            try {
+                String email = showInputDialog("Entrez votre email :", "Authentification");
+
+
+                String password = showInputDialog("Entrez votre mot de passe :", "Authentification");
+
+                switch (selectedRole) {
+                    case "Bénévole":
+                        connectionManager.authenticateOrRegisterUser(email, password, "benevole");
+                        JOptionPane.showMessageDialog(null, "Session bénévole terminée.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+
+                    case "Demandeur":
+                        connectionManager.authenticateOrRegisterUser(email, password, "demandeur");
+                        JOptionPane.showMessageDialog(null, "Session demandeur terminée.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+
+                    case "Validateur":
+                        connectionManager.authenticateOrRegisterUser(email, password, "validateur");
+                        JOptionPane.showMessageDialog(null, "Session validateur terminée.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+
+                    case "Administrateur":
+                        launchAdminFrame(connectionManager);
+                        break;
+
+                    default:
+                        JOptionPane.showMessageDialog(null, "Rôle inconnu. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                // Gestion des erreurs générales
+                JOptionPane.showMessageDialog(null, "Une erreur s'est produite : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+
     }
 
+    // Méthode utilitaire pour afficher un dialogue avec gestion de l'annulation
+    private static String showInputDialog(String message, String title) {
+        String input = JOptionPane.showInputDialog(null, message, title, JOptionPane.QUESTION_MESSAGE);
+        return input; // Retourne null si l'utilisateur annule
+    }
+
+    // Gestion du rôle administrateur
     private static void launchAdminFrame(ConnectionManager connectionManager) {
-        String[] actions = {"Gérer les utilisateurs", "Gérer les missions", "Exporter des données", "Se déconnecter"};
-        while (true) {
+        boolean keepAdminRunning = true;
+
+        while (keepAdminRunning) {
+            String[] actions = {"Gérer les utilisateurs", "Gérer les missions", "Exporter des données", "Retour"};
             String choice = (String) JOptionPane.showInputDialog(
                     null,
                     "Choisissez une action :",
@@ -72,35 +91,44 @@ public class Main {
                     actions[0]
             );
 
-            if (choice == null || choice.equals("Se déconnecter")) {
-                JOptionPane.showMessageDialog(null, "Déconnexion réussie. Merci !", "Au revoir", JOptionPane.INFORMATION_MESSAGE);
-                break;
+            if (choice == null || choice.equals("Retour")) {
+                JOptionPane.showMessageDialog(null, "Retour au menu principal.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                keepAdminRunning = false;
+                continue;
             }
 
-            switch (choice) {
-                case "Gérer les utilisateurs":
-                    JOptionPane.showMessageDialog(null, "Gestion des utilisateurs en cours...", "Info", JOptionPane.INFORMATION_MESSAGE);
-                    // Ajouter le code pour gérer les utilisateurs
-                    break;
+            try {
+                switch (choice) {
+                    case "Gérer les utilisateurs":
+                        JOptionPane.showMessageDialog(null, "Gestion des utilisateurs en cours...", "Info", JOptionPane.INFORMATION_MESSAGE);
+                        break;
 
-                case "Gérer les missions":
-                    JOptionPane.showMessageDialog(null, "Gestion des missions en cours...", "Info", JOptionPane.INFORMATION_MESSAGE);
-                    // Ajouter le code pour gérer les missions
-                    break;
+                    case "Gérer les missions":
+                        JOptionPane.showMessageDialog(null, "Gestion des missions en cours...", "Info", JOptionPane.INFORMATION_MESSAGE);
+                        break;
 
-                case "Exporter des données":
-                    String tableName = JOptionPane.showInputDialog("Nom de la table à exporter :");
-                    String filePath = JOptionPane.showInputDialog("Chemin du fichier CSV :");
-                    try {
+                    case "Exporter des données":
+                        String tableName = showInputDialog("Nom de la table à exporter :", "Exportation");
+                        if (tableName == null) {
+                            JOptionPane.showMessageDialog(null, "Export annulé.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                            continue;
+                        }
+
+                        String filePath = showInputDialog("Chemin du fichier CSV :", "Exportation");
+                        if (filePath == null) {
+                            JOptionPane.showMessageDialog(null, "Export annulé.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                            continue;
+                        }
+
                         connectionManager.exportToCSV(tableName, filePath);
-                    } catch (Exception e) {
-                        JOptionPane.showMessageDialog(null, "Erreur lors de l'exportation : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-                    }
-                    break;
+                        break;
 
-                default:
-                    JOptionPane.showMessageDialog(null, "Option inconnue.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    break;
+                    default:
+                        JOptionPane.showMessageDialog(null, "Option inconnue. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Une erreur s'est produite : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
     }

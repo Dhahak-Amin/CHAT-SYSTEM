@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.regex.Pattern;
 public class ConnectionManager {
-    private static final String DB_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012";
-    private static final String USER = "projet_gei_012";
-    private static final String PASS = "dith1Que";
 
     private static ConnectionManager instance;
     private Connection conn;
@@ -25,19 +22,24 @@ public class ConnectionManager {
         }
         return instance;
     }
-    public Connection getConnection() {
-        return conn;
-    }
 
-    public ConnectionManager() {
+    // Constructeur privé pour empêcher l'instanciation directe
+    private ConnectionManager() {
         try {
-            this.conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            // Utilisation de RemoteDatabaseManager pour gérer la connexion
+            this.conn = RemoteDatabaseManager.getInstance().getConnection();
             JOptionPane.showMessageDialog(null, "Connexion réussie à la base de données !", "Succès", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erreur de connexion à la base de données. Veuillez vérifier vos paramètres.", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public Connection getConnection() {
+        return conn;
+    }
+
+
 
     private String validateEmail(String email) {
         while (!isValidEmailFormat(email)) {

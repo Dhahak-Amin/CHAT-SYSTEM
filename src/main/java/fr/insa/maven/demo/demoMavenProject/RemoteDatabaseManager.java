@@ -4,21 +4,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
-import java.util.Arrays;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-public class DatabaseManager {
+public class RemoteDatabaseManager {
 
-    // Informations de connexion au serveur MySQL
-    private static final String SERVER_URL = "jdbc:mysql://localhost:3306/";
-    private static final String DATABASE_NAME = "test_db";
+    // Informations de connexion au serveur MySQL distant
+    private static final String SERVER_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/";
+    private static final String DATABASE_NAME = "projet_gei_012";
     public static final String DB_URL = SERVER_URL + DATABASE_NAME;
-    public static final String USER = "root"; // ou ton utilisateur MySQL
-    public static final String PASS = "root"; // ou ton mot de passe MySQL
+    public static final String USER = "projet_gei_012";
+    public static final String PASS = "dith1Que";
+    // Instance unique (Singleton)
+    private static RemoteDatabaseManager instance;
 
     // Chemin du fichier SQL d'initialisation
-    public static final String SQL_FILE_PATH = "src/test/resources/Sql_Test.sql";
+    public static final String SQL_FILE_PATH = "src/main/resources/remote_init.sql";
 
-    // Méthode pour s'assurer que la base de données existe
+    // Méthode pour vérifier que la base de données existe et y accéder
     public static void ensureDatabaseExists() {
         try (Connection conn = DriverManager.getConnection(SERVER_URL, USER, PASS);
              Statement stmt = conn.createStatement()) {
@@ -27,9 +31,22 @@ public class DatabaseManager {
             System.out.println("Base de données vérifiée ou créée : " + DATABASE_NAME);
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Erreur lors de la création ou de la vérification de la base de données.");
+            throw new RuntimeException("Erreur lors de la vérification ou création de la base distante.");
         }
     }
+
+    // Méthode pour obtenir l'instance unique
+    public static RemoteDatabaseManager getInstance() {
+        if (instance == null) {
+            synchronized (RemoteDatabaseManager.class) {
+                if (instance == null) {
+                    instance = new RemoteDatabaseManager();
+                }
+            }
+        }
+        return instance;
+    }
+
 
     // Méthode pour exécuter un fichier SQL via MySQL CLI avec gestion multi-OS
     public static void executeSqlFileWithCli(String sqlFilePath) {
@@ -96,14 +113,15 @@ public class DatabaseManager {
         }
     }
 
+    // Méthode pour nettoyer les données des tables
     public static void cleanDatabase() {
         String[] cleanSQL = {
-                "DELETE FROM avis",
-                "DELETE FROM mission",
-                "DELETE FROM validateur",
-                "DELETE FROM benevole",
-                "DELETE FROM demandeur",
-                "DELETE FROM user"
+                "DELETE FROM Avis",
+                "DELETE FROM Mission",
+                "DELETE FROM Validateur",
+                "DELETE FROM Benevole",
+                "DELETE FROM Demandeur",
+                "DELETE FROM User"
         };
 
         try (Connection conn = getConnection();
@@ -112,10 +130,9 @@ public class DatabaseManager {
             for (String query : cleanSQL) {
                 stmt.executeUpdate(query);  // Exécuter chaque requête pour nettoyer la base de données
             }
-            System.out.println("Base de données nettoyée.");
+            System.out.println("Base de données distante nettoyée.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }

@@ -10,21 +10,17 @@ public class AllMissions {
 
     private List<Mission> missions;
     private Connection conn;
-    // Informations de connexion à la base de données
-    static final String DB_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_012";
-    static final String USER = "projet_gei_012";
-    static final String PASS = "dith1Que";
 
     // Constructeur privé pour empêcher les instances externes
     private AllMissions() {
         this.missions = new ArrayList<>();
         try {
-            this.conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            // Utilisation de RemoteDatabaseManager pour gérer la connexion
+            this.conn = RemoteDatabaseManager.getInstance().getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 
     // Obtenir l'instance unique (Singleton)
     public static AllMissions getInstance() {
@@ -82,7 +78,6 @@ public class AllMissions {
             e.printStackTrace();
         }
     }
-
 
     // Méthodes CRUD et autres fonctionnalités
     public void addMission(Mission mission) {
@@ -185,6 +180,40 @@ public class AllMissions {
         }
         throw new SQLException("Bénévole non trouvé !");
     }
+
+    // Méthode pour enregistrer une mission dans la base de données
+    public void enregistrerMission(Mission mission) {
+        try {
+            String sql = "INSERT INTO Mission (intitule, place, etat, demandeur_email, benevole_email) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, mission.getIntitule());
+            stmt.setString(2, mission.getPlace().name());
+            stmt.setString(3, mission.getEtat().name());
+            stmt.setString(4, mission.getDemandeur().getEmail());
+            stmt.setString(5, mission.getBenevole() != null ? mission.getBenevole().getEmail() : null);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Méthode pour trouver une mission par son intitulé
+    public Mission findMission(String intitule) {
+        for (Mission mission : missions) {
+            if (mission.getIntitule().equals(intitule)) {
+                return mission;
+            }
+        }
+        return null;
+    }
+    // Méthode pour compter le nombre de missions
+    public int countMissions() {
+        return missions.size();
+    }
+    // Efface uniquement la liste des missions en mémoire
+    public void clear() {
+        missions.clear();
+    }
     // Efface toutes les missions de la liste et de la base de données
     public void clearMissions() {
         missions.clear(); // Vide la liste en mémoire
@@ -197,40 +226,4 @@ public class AllMissions {
             e.printStackTrace();
         }
     }
-    // Méthode pour enregistrer une mission dans la base de données
-    public void enregistrerMission(Mission mission) {
-        try {
-            String sql = "INSERT INTO Mission (intitule, place, etat, demandeur_email, benevole_email) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, mission.getIntitule());
-            stmt.setString(2, mission.getPlace().name());
-            stmt.setString(3, mission.getEtat().name());
-            stmt.setString(4, mission.getDemandeur().getEmail()); // Assurez-vous que l'email du demandeur est utilisé
-            stmt.setString(5, mission.getBenevole() != null ? mission.getBenevole().getEmail() : null); // Insérez l'email du bénévole
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-        // Méthode pour trouver une mission par son intitulé
-        public Mission findMission(String intitule) {
-            for (Mission mission : missions) {
-                if (mission.getIntitule().equals(intitule)) {
-                    return mission;
-                }
-            }
-            return null;
-        }
-    // Méthode pour compter le nombre de missions
-    public int countMissions() {
-        return missions.size();
-    }
-    // Efface uniquement la liste des missions en mémoire
-    public void clear() {
-        missions.clear();
-    }
-
-
-
 }

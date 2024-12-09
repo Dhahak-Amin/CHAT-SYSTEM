@@ -21,7 +21,7 @@ public class FrameDemandeurTest {
 
         // Initialisation et nettoyage des missions
         allMissions = AllMissions.getInstance();
-        allMissions.clearMissions(); // Suppression des missions existantes
+        allMissions.clear(); // Suppression des missions existantes
 
         // Ajout de missions
         allMissions.addMission(new Mission(MissionEtat.EN_COURS_DE_VALIDATION, "Aide aux courses", demandeur, Place.HOME));

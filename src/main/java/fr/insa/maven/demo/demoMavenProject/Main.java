@@ -5,7 +5,11 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String[] args) {
-        ConnectionManager connectionManager = new ConnectionManager();
+        // Initialisation de l'instance de ConnectionManager avec RemoteDatabaseManager
+        ConnectionManager connectionManager = ConnectionManager.getInstance();
+
+        // Charger les missions depuis la base de données
+        AllMissions.getInstance().loadMissionsFromDatabase();
 
         // Charger les missions depuis la base de données
         AllMissions.getInstance().loadMissionsFromDatabase();

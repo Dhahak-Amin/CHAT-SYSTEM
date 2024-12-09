@@ -1,96 +1,56 @@
-# Logs and temporary files
-*.log
-*.tmp
-*.swp
-*.swo
-*.bak
-*.old
-*~
+# IntelliJ IDEA specific
+.idea/
+*.iml
+
+# VS Code specific
+.vscode/
+
+# Eclipse specific
+.project
+.classpath
+.settings/
 
 # Maven specific
 target/
 !.gitkeep
-.mvn/
 dependency-reduced-pom.xml
 
-# IntelliJ IDEA specific
-.idea/
-*.iml
-out/
-
-# Eclipse specific
-.classpath
-.project
-.settings/
-
-# NetBeans specific
-nbproject/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
-
-# Visual Studio Code specific
-.vscode/
+# Logs and crash reports
+*.log
+hs_err_pid*.log
+replay_pid*.log
 
 # System files
 .DS_Store
 Thumbs.db
 Icon?
 
-# Compiled Java files
-*.class
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.bak
+*~
 
-# Archives
+# Generated files
+*.class
 *.jar
 *.war
 *.ear
 
-# Swing Designer files
-*.form
-
-# Database files
-*.db
-*.sqlite
-*.sql
-
-# Draw.io diagrams
-*.drawio
-
-# Test output
+# Test outputs
 test-output/
 
-# Build directories
-bin/
-build/
+# Local database configurations
+src/test/resources/Sql_Test.sql
+*.db
+*.sqlite
 
-# Local environment and configuration
-*.env
-*.properties
-*.config
-
-# Sensitive keys and certificates
-*.crt
-*.pem
-*.key
-
-# Application-specific locks
-*.lock
-*.pid
-*.seed
-
-# Generated documentation
-*.generated
-*.gen
-
-# Ignore all CSVs by default (useful if exporting data)
-*.csv
-
-# Ignore temporary files from tests or development
-*.backup
-
-# Node.js dependencies)
+# Node.js (if applicable)
 node_modules/
 
-# Ignore specific sensitive files for the project
-src/test/resources/Sql_Test.sql
+# Sensitive environment files
+*.env
+*.key
+*.pem
+*.crt

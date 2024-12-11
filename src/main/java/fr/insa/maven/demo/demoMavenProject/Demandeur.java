@@ -4,32 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe représentant un demandeur.
+ * Un demandeur est un utilisateur qui peut créer des missions et suivre leurs statuts.
+ */
 public class Demandeur extends User {
-    private String description;
-    private String needs;
-    private Place location; // Assurez-vous que Place est un enum ou une classe valide
+    private String description;         // Description du demandeur
+    private String needs;              // Besoins spécifiques du demandeur
+    private Place location;            // Lieu principal du demandeur
     private static final Scanner scanner = new Scanner(System.in); // Scanner unique pour toute la classe
+    private List<Mission> myMissions;  // Liste des missions associées au demandeur
 
-
-
-    private List<Mission> Mymissions;
-
-    private FrameDemandeur frameDemandeur;
-
-
-
-
-
-    public Demandeur(String firstname, String lastname, String description, String needs,Place location, String email, String password) {
-        super(firstname, lastname,email,password);
+    /**
+     * Constructeur pour créer un demandeur.
+     *
+     * @param firstname  Prénom du demandeur.
+     * @param lastname   Nom de famille du demandeur.
+     * @param description Description du demandeur.
+     * @param needs       Besoins spécifiques du demandeur.
+     * @param location    Lieu principal du demandeur.
+     * @param email       Email du demandeur.
+     * @param password    Mot de passe du demandeur.
+     */
+    public Demandeur(String firstname, String lastname, String description, String needs, Place location, String email, String password) {
+        super(firstname, lastname, email, password);
         this.description = description;
         this.needs = needs;
         this.location = location;
-        this.Mymissions= CreateMymissions(AllMissions.getInstance());
+        this.myMissions = createMyMissions(AllMissions.getInstance());
     }
 
+    // Getters et Setters
 
-    // Getters et setters
     public String getDescription() {
         return description;
     }
@@ -38,11 +44,13 @@ public class Demandeur extends User {
         this.description = description;
     }
 
+    public String getNeeds() {
+        return needs;
+    }
 
-
-
-
-
+    public void setNeeds(String needs) {
+        this.needs = needs;
+    }
 
     public Place getLocation() {
         return location;
@@ -52,53 +60,63 @@ public class Demandeur extends User {
         this.location = location;
     }
 
-    // Méthode pour créer une mission
+    public List<Mission> getMyMissions() {
+        return myMissions;
+    }
 
-    public List<Mission> CreateMymissions(AllMissions allMissions) {
-        // Créer une nouvelle instance d'AllMissions pour stocker les missions acceptées
-        List<Mission>acceptedMissions = new ArrayList<>();
+    public void setMyMissions(List<Mission> missions) {
+        this.myMissions = missions;
+    }
 
-        // Parcourir toutes les missions
+    // Méthodes principales
+
+    /**
+     * Initialise la liste des missions associées au demandeur.
+     *
+     * @param allMissions Instance globale contenant toutes les missions.
+     * @return Liste des missions du demandeur.
+     */
+    public List<Mission> createMyMissions(AllMissions allMissions) {
+        List<Mission> acceptedMissions = new ArrayList<>();
         for (Mission mission : allMissions.getMissions()) {
-            // Vérifier si le bénévole de la mission est celui courant (this)
             if (this.equals(mission.getDemandeur())) {
-                // Ajouter la mission à la liste des missions acceptées
                 acceptedMissions.add(mission);
             }
         }
-
-        // Retourner l'objet AllMissions contenant uniquement les missions du bénévole courant
         return acceptedMissions;
     }
 
-    public void UpdateMymissions(AllMissions allMissions) {
-        // Créer une nouvelle instance d'AllMissions pour stocker les missions acceptées
-
-
-        // Parcourir toutes les missions
+    /**
+     * Met à jour la liste des missions associées au demandeur.
+     *
+     * @param allMissions Instance globale contenant toutes les missions.
+     */
+    public void updateMyMissions(AllMissions allMissions) {
         for (Mission mission : allMissions.getMissions()) {
-            // Vérifier si le bénévole de la mission est celui courant (this)
-            if (this.equals(mission.getDemandeur())) {
-                // Ajouter la mission à la liste des missions acceptées
-                this.Mymissions.add(mission);
+            if (this.equals(mission.getDemandeur()) && !myMissions.contains(mission)) {
+                this.myMissions.add(mission);
             }
-
         }
-
-
-        // Retourner l'objet AllMissions contenant uniquement les missions du bénévole courant
-
     }
+
+    /**
+     * Crée une nouvelle mission.
+     *
+     * @param intitule Intitulé de la mission.
+     * @param place    Lieu de la mission.
+     * @return La mission créée.
+     */
     public Mission createMission(String intitule, Place place) {
-        // Création d'une nouvelle mission
-        Mission mission = new Mission(MissionEtat.EN_ATTENTE_AFFECTATION, intitule, this, place);
-        return mission; // Retourner la mission créée
+        return new Mission(MissionEtat.EN_ATTENTE_AFFECTATION, intitule, this, place);
     }
 
-    // Méthode pour choisir un lieu
+    /**
+     * Permet au demandeur de choisir un lieu pour une mission.
+     *
+     * @return Le lieu choisi.
+     */
     public Place choosePlace() {
         Place[] places = Place.values();
-
         System.out.println("Choisissez un endroit pour la mission :");
         for (int i = 0; i < places.length; i++) {
             System.out.println((i + 1) + ". " + places[i]);
@@ -109,49 +127,23 @@ public class Demandeur extends User {
             System.out.print("Entrez le numéro de votre choix : ");
             while (!scanner.hasNextInt()) {
                 System.out.println("Veuillez entrer un nombre valide.");
-                scanner.next(); // Ignorer l'entrée non valide
+                scanner.next();
             }
             choice = scanner.nextInt();
         } while (choice < 1 || choice > places.length);
 
-        return places[choice - 1]; // Retourner la place choisie
+        return places[choice - 1];
     }
 
-
-
-
-
-    public String getNeeds() {
-        return needs;
-    }
-
-    public void setNeeds(String needs) {
-        this.needs = needs;
-    }
-
-
-
-    public List<Mission> getMissions() {
-        return Mymissions;
-    }
-
-    public void setMissions(List<Mission> missions) {
-        this.Mymissions = missions;
-    }
-
-
-    private String getText(String text) {
-        System.out.print(text);
+    /**
+     * Demande et retourne une chaîne de texte saisie par l'utilisateur.
+     *
+     * @param prompt Texte à afficher pour l'utilisateur.
+     * @return Texte saisi par l'utilisateur.
+     */
+    private String getText(String prompt) {
+        System.out.print(prompt);
         scanner.nextLine(); // Consommer la nouvelle ligne restante
-        return scanner.nextLine(); // Lire la ligne de texte saisie par l'utilisateur
+        return scanner.nextLine();
     }
-
-
-
-
-
-
-
-
-
 }

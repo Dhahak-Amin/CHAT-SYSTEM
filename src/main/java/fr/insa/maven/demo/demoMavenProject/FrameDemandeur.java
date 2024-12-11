@@ -3,24 +3,28 @@ package fr.insa.maven.demo.demoMavenProject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
+/**
+ * Classe FrameDemandeur
+ * Cette classe gère l'interface graphique pour les demandeurs,
+ * leur permettant de gérer leurs missions (ajouter, supprimer, noter).
+ */
 public class FrameDemandeur extends JFrame {
-    private  AllMissions allMissions; // Instance de AllMissions
-    private Demandeur demandeur;
-
+    private AllMissions allMissions; // Instance de AllMissions
+    private Demandeur demandeur; // Demandeur connecté
     private JButton rateButton; // Bouton pour noter une mission
-
-    private DefaultListModel<Mission> missionListModel; // Modèle de la liste
-    private JList<Mission> missionList; // Liste pour afficher les missions
+    private DefaultListModel<Mission> missionListModel; // Modèle de la liste des missions
+    private JList<Mission> missionList; // Liste graphique pour afficher les missions
     private JButton addButton; // Bouton pour ajouter une mission
     private JButton deleteButton; // Bouton pour supprimer une mission
 
-    public FrameDemandeur( Demandeur demandeur) {
-
+    /**
+     * Constructeur de FrameDemandeur.
+     *
+     * @param demandeur Le demandeur connecté.
+     */
+    public FrameDemandeur(Demandeur demandeur) {
         this.demandeur = demandeur;
         this.allMissions = AllMissions.getInstance();
         this.missionListModel = new DefaultListModel<>();
@@ -35,74 +39,55 @@ public class FrameDemandeur extends JFrame {
         setSize(500, 400);
         setLayout(new BorderLayout());
 
-        // Configurer le renderer de la liste pour afficher la mission
+        // Configurer le renderer personnalisé pour la liste des missions
         missionList.setCellRenderer(new MissionCellRenderer());
         missionList.setFixedCellHeight(50);
 
-        // Ajouter la liste des missions à un JScrollPane
+        // Ajouter la liste des missions dans un JScrollPane
         JScrollPane scrollPane = new JScrollPane(missionList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Panel pour les boutons en bas
-        // Utilisation d'un GridLayout pour une organisation flexible des boutons
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 0)); // 1 ligne, 3 colonnes, avec un espace horizontal de 10px
-
+        // Configuration du panneau des boutons
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 0));
         buttonPanel.add(addButton);
         buttonPanel.add(rateButton);
         buttonPanel.add(deleteButton);
-
         add(buttonPanel, BorderLayout.SOUTH);
 
+        // Ajout des listeners aux boutons
+        configureButtonActions();
 
-        // Configuration du bouton d'ajout
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addMission();
-            }
-        });
-
-        // Configuration du bouton de suppression
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                deleteMission();
-            }
-        });
-        rateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                rateMission();
-            }
-        });
-
-
-        // Initialiser l'affichage des missions
+        // Initialisation des missions et mise à jour de l'affichage
         allMissions.loadMissionsFromDatabase();
         updateMissionList();
     }
 
-    // Méthode pour mettre à jour la liste des missions affichées
-    private void updateMissionList() {
-        missionListModel.clear(); // On vide le modèle avant de le remplir pour éviter les doublons
+    /**
+     * Configure les actions des boutons (ajouter, supprimer, noter).
+     */
+    private void configureButtonActions() {
+        addButton.addActionListener(e -> addMission());
+        deleteButton.addActionListener(e -> deleteMission());
+        rateButton.addActionListener(e -> rateMission());
+    }
 
+    /**
+     * Met à jour la liste des missions affichées.
+     */
+    private void updateMissionList() {
+        missionListModel.clear(); // Réinitialiser la liste
         for (Mission mission : allMissions.getMissions()) {
-            // Vérifie si la mission appartient au demandeur connecté
             if (mission.getDemandeur() != null && mission.getDemandeur().getEmail().equals(this.demandeur.getEmail())) {
                 missionListModel.addElement(mission);
             }
         }
-       // System.out.println("Missions affichées pour le demandeur " + demandeur.getEmail() + ": " + missionListModel.size());
     }
 
-    // Ajout dans la classe FrameDemandeur
-    public DefaultListModel<Mission> getMissionListModel() {
-        return missionListModel;
-    }
-
-    // Méthode pour ajouter une nouvelle mission
+    /**
+     * Ajoute une nouvelle mission pour le demandeur.
+     */
     private void addMission() {
-        String intitule = JOptionPane.showInputDialog(this, "Quel est l'intitulé de la mission?");
+        String intitule = JOptionPane.showInputDialog(this, "Quel est l'intitulé de la mission ?");
         if (intitule != null && !intitule.trim().isEmpty()) {
             Place[] places = Place.values();
             Place selectedPlace = (Place) JOptionPane.showInputDialog(
@@ -128,26 +113,30 @@ public class FrameDemandeur extends JFrame {
         }
     }
 
-    // Méthode pour supprimer une mission en fonction du numéro entré
+    /**
+     * Supprime une mission sélectionnée par son numéro.
+     */
     private void deleteMission() {
-        String input = JOptionPane.showInputDialog(this, "Entrez le numéro de la mission à supprimer:");
+        String input = JOptionPane.showInputDialog(this, "Entrez le numéro de la mission à supprimer :");
         if (input != null && !input.trim().isEmpty()) {
             try {
-                int missionIndex = Integer.parseInt(input) - 1; // 1 = première mission
+                int missionIndex = Integer.parseInt(input) - 1;
                 if (missionIndex >= 0 && missionIndex < missionListModel.size()) {
                     Mission mission = missionListModel.get(missionIndex);
-                    allMissions.removeMission(mission); // Supprime la mission de AllMissions
+                    allMissions.removeMission(mission);
                     updateMissionList();
                 } else {
                     JOptionPane.showMessageDialog(this, "Numéro de mission invalide !", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Veuillez entrer un nombre valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Veuillez entrer un numéro valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    // Méthode pour noter une mission
+    /**
+     * Permet de noter une mission terminée.
+     */
     private void rateMission() {
         Mission selectedMission = missionList.getSelectedValue();
         if (selectedMission == null) {
@@ -155,52 +144,35 @@ public class FrameDemandeur extends JFrame {
             return;
         }
 
-        // Saisie de la note (0 à 5)
         String noteInput = JOptionPane.showInputDialog(this, "Entrez une note pour cette mission (0 à 5) :");
-        if (noteInput == null || noteInput.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vous devez entrer une note.", "Erreur", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int note;
         try {
-            note = Integer.parseInt(noteInput);
-            if (note < 0 || note > 5) {
-                throw new NumberFormatException();
+            int note = Integer.parseInt(noteInput);
+            if (note < 0 || note > 5) throw new NumberFormatException();
+
+            String comment = JOptionPane.showInputDialog(this, "Entrez votre avis sur cette mission :");
+            if (comment != null && !comment.trim().isEmpty()) {
+                Avis avis = new Avis(selectedMission.getBenevole());
+                avis.setNote(note);
+                avis.setComment(comment);
+
+                Benevole benevole = selectedMission.getBenevole();
+                if (benevole != null) {
+                    benevole.addAvis(avis);
+                    JOptionPane.showMessageDialog(this, "Votre avis a été ajouté avec succès.", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cette mission n'est pas associée à un bénévole.", "Erreur", JOptionPane.WARNING_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vous devez entrer un avis.", "Erreur", JOptionPane.WARNING_MESSAGE);
             }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Veuillez entrer un entier entre 0 et 5.", "Erreur", JOptionPane.ERROR_MESSAGE);
-            return;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Veuillez entrer une note valide entre 0 et 5.", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Saisie du commentaire
-        String comment = JOptionPane.showInputDialog(this, "Entrez votre avis sur cette mission :");
-        if (comment == null || comment.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vous devez entrer un avis.", "Erreur", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Création de l'avis
-        Avis avis = new Avis(selectedMission.getBenevole());
-        avis.setNote(note);
-        avis.setComment(comment);
-
-
-        // Ajouter l'avis au bénévole ou à une autre entité
-        Benevole benevole = selectedMission.getBenevole(); // Récupère le bénévole de la mission
-        if (benevole != null) {
-            benevole.addAvis(avis);
-            allMissions.removeMission(selectedMission);
-            updateMissionList();
-            JOptionPane.showMessageDialog(this, "Votre avis a été ajouté avec succès.", "Succès", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Cette mission n'est pas associée à un bénévole.", "Erreur", JOptionPane.WARNING_MESSAGE);
-        }
-
     }
 
-
-    // Renderer personnalisé pour afficher chaque mission sans bouton de suppression
+    /**
+     * Renderer personnalisé pour afficher les missions dans la liste.
+     */
     private class MissionCellRenderer extends JPanel implements ListCellRenderer<Mission> {
         private JLabel missionLabel;
 
@@ -212,13 +184,13 @@ public class FrameDemandeur extends JFrame {
 
         @Override
         public Component getListCellRendererComponent(JList<? extends Mission> list, Mission mission, int index, boolean isSelected, boolean cellHasFocus) {
-            Demandeur demandeur = mission.getDemandeur();
-            String missionDetails = (index + 1) + ". " + mission.getIntitule() + " - " + mission.getPlace().name()
-                    + " - " + demandeur.getFirstname() + " " + demandeur.getLastname()
-                    + " - État : " + mission.getEtat();
+            String missionDetails = String.format("%d. %s - %s - État : %s",
+                    index + 1,
+                    mission.getIntitule(),
+                    mission.getPlace().name(),
+                    mission.getEtat());
             missionLabel.setText(missionDetails);
 
-            // Appliquer une couleur de fond si sélectionnée
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
                 setForeground(list.getSelectionForeground());
@@ -230,35 +202,8 @@ public class FrameDemandeur extends JFrame {
             return this;
         }
     }
-
-
-    public static void main(String[] args) {
-
-        AllMissions allMissions = AllMissions.getInstance();
-
-        Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", Place.HOME, "alice@example.com", "password123");
-        Demandeur demandeur2 = new Demandeur("Alieece", "Deeupont", "Besoin dee'aide", "Jareedin", Place.HOSPITAL, "alice@exeample.com", "passweeord123");
-        Benevole benevole = new Benevole ("Elian", "Boaglio", "lalalla", "mdp","agriculteur");
-        Mission mission1 = new Mission(MissionEtat.INVALIDE,"jardin",  demandeur, Place.HOME);
-        Mission mission2 = new Mission(MissionEtat.VALIDEE,"piscine",  demandeur, Place.WORKPLACE, benevole);
-        Mission mission3 = new Mission("canapé",  demandeur, Place.HOME);
-        Mission mission4 = new Mission("bobo",  demandeur2, Place.HOSPITAL);
-        Mission mission5 = new Mission("mamie",  demandeur, Place.EHPAD);
-
-// Ajout des missions à la liste des missions
-        allMissions.addMission(mission1);
-        allMissions.addMission(mission2);
-        allMissions.addMission(mission3);
-        allMissions.addMission(mission4);
-        allMissions.addMission(mission5);
-
-
-
-        SwingUtilities.invokeLater(() -> {
-            FrameDemandeur frame = new FrameDemandeur( demandeur);
-            frame.setVisible(true);
-        });
+    // Ajout dans la classe FrameBenevole
+    public DefaultListModel<Mission> getMissionListModel() {
+        return missionListModel;
     }
-
-
 }

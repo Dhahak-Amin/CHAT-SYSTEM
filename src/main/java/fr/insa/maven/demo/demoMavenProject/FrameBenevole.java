@@ -5,23 +5,28 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Classe FrameBenevole
+ * Cette classe gère l'interface graphique pour les bénévoles et leur permet de consulter
+ * et accepter les missions disponibles.
+ */
 public class FrameBenevole extends JFrame {
-    private AllMissions allMissions; // Instance de AllMissions
-    private DefaultListModel<Mission> missionListModel; // Modèle de la liste des missions
-    private JList<Mission> missionList; // Liste pour afficher les missions
-    private JButton changeStatusButton; // Bouton pour changer le statut d'une mission
+    private AllMissions allMissions; // Instance de AllMissions contenant toutes les missions
+    private DefaultListModel<Mission> missionListModel; // Modèle de données pour afficher les missions
+    private JList<Mission> missionList; // Liste graphique des missions
+    private JButton changeStatusButton; // Bouton pour accepter une mission
+    private JLabel moyenneLabel; // Affiche la moyenne des avis du bénévole
+    private Benevole benevole; // Référence au bénévole connecté
 
-    private JLabel moyenneLabel;
-    private Benevole benevole;
+    /**
+     * Constructeur de FrameBenevole.
+     *
+     * @param allMissions Instance de AllMissions contenant toutes les missions.
+     * @param benevole    Bénévole connecté.
+     */
     public FrameBenevole(AllMissions allMissions, Benevole benevole) {
-        this.benevole=benevole;
+        this.benevole = benevole;
         this.allMissions = allMissions;
-        // Ajout de l'étiquette de la moyenne
-        moyenneLabel = new JLabel("Moyenne des avis : " + benevole.MoyennetoString());
-        add(moyenneLabel, BorderLayout.NORTH);
-        this.missionListModel = new DefaultListModel<>();
-        this.missionList = new JList<>(missionListModel);
-        this.changeStatusButton = new JButton("Accepter la mission");
 
         // Configuration de la fenêtre
         setTitle("Missions du Bénévole");
@@ -29,20 +34,27 @@ public class FrameBenevole extends JFrame {
         setSize(500, 400);
         setLayout(new BorderLayout());
 
-        // Configurer le renderer de la liste pour afficher la mission
-        missionList.setCellRenderer(new MissionCellRenderer());
+        // Affichage de la moyenne des avis
+        moyenneLabel = new JLabel("Moyenne des avis : " + benevole.MoyennetoString());
+        add(moyenneLabel, BorderLayout.NORTH);
+
+        // Configuration de la liste des missions
+        missionListModel = new DefaultListModel<>();
+        missionList = new JList<>(missionListModel);
+        missionList.setCellRenderer(new MissionCellRenderer()); // Renderer personnalisé
         missionList.setFixedCellHeight(50);
 
         // Ajouter la liste des missions à un JScrollPane
         JScrollPane scrollPane = new JScrollPane(missionList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Configuration du bouton pour changer le statut
+        // Configuration du bouton pour accepter les missions
+        changeStatusButton = new JButton("Accepter la mission");
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(changeStatusButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // ActionListener pour le bouton "Changer le statut"
+        // ActionListener pour le bouton
         changeStatusButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -50,68 +62,50 @@ public class FrameBenevole extends JFrame {
             }
         });
 
-        // Initialiser l'affichage des missions
-        updateMissionList();    }
+        // Initialisation de la liste des missions
+        updateMissionList();
+    }
 
-    // Méthode pour mettre à jour la liste des missions affichées
+    /**
+     * Met à jour la liste des missions affichées.
+     * Seules les missions en attente d'affectation et sans bénévole assigné sont affichées.
+     */
     private void updateMissionList() {
-
+        missionListModel.clear();
         for (Mission mission : allMissions.getMissions()) {
-            // Affiche les missions en attente d'affectation
             if (mission.getEtat() == MissionEtat.EN_ATTENTE_AFFECTATION && mission.getBenevole() == null) {
                 missionListModel.addElement(mission);
             }
         }
-
     }
 
+    /**
+     * Change le statut de la mission sélectionnée.
+     * Les missions avec Place.HOSPITAL passent en EN_COURS_DE_VALIDATION, les autres sont VALIDÉES.
+     */
     private void changeMissionStatus() {
-        // Vérifie si une mission est sélectionnée
         Mission selectedMission = missionList.getSelectedValue();
         if (selectedMission != null) {
             if (selectedMission.getPlace() == Place.HOSPITAL) {
-                // Missions avec PLACE == HOSPITAL passent directement en EN_COURS_DE_VALIDATION
                 selectedMission.setEtat(MissionEtat.EN_COURS_DE_VALIDATION);
-
-                // Assigner la mission au bénévole
                 benevole.acceptMission(selectedMission);
-
-                // Enregistrer la mise à jour
                 allMissions.enregistrerMission2(selectedMission);
-
-                JOptionPane.showMessageDialog(this,
-                        "La mission est maintenant en cours de validation par un validateur.",
-                        "Mise à jour réussie",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "La mission est maintenant en cours de validation par un validateur.", "Mise à jour réussie", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // Missions avec une autre PLACE sont directement validées
                 selectedMission.setEtat(MissionEtat.VALIDEE);
-
-                // Assigner la mission au bénévole
                 benevole.acceptMission(selectedMission);
-
-                // Enregistrer la mise à jour
                 allMissions.enregistrerMission2(selectedMission);
-
-                JOptionPane.showMessageDialog(this,
-                        "La mission a été validée avec succès.",
-                        "Mise à jour réussie",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "La mission a été validée avec succès.", "Mise à jour réussie", JOptionPane.INFORMATION_MESSAGE);
             }
-
-            // Mettre à jour l'affichage
             updateMissionList();
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "Veuillez sélectionner une mission.",
-                    "Erreur",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner une mission.", "Erreur", JOptionPane.WARNING_MESSAGE);
         }
     }
 
-
-
-    // Renderer personnalisé pour afficher chaque mission
+    /**
+     * Renderer personnalisé pour afficher chaque mission dans la liste.
+     */
     private class MissionCellRenderer extends JPanel implements ListCellRenderer<Mission> {
         private JLabel missionLabel;
 
@@ -124,10 +118,16 @@ public class FrameBenevole extends JFrame {
         @Override
         public Component getListCellRendererComponent(JList<? extends Mission> list, Mission mission, int index, boolean isSelected, boolean cellHasFocus) {
             Demandeur demandeur = mission.getDemandeur();
-            String missionDetails = (index + 1) + ". " + mission.getIntitule() + " - " + mission.getPlace().name() + " - " + " - " + demandeur.getFirstname() + " " + demandeur.getLastname() + "   "+ mission.getEtat() ;
+            String missionDetails = String.format("%d. %s - %s - %s %s - %s",
+                    index + 1,
+                    mission.getIntitule(),
+                    mission.getPlace().name(),
+                    demandeur.getFirstname(),
+                    demandeur.getLastname(),
+                    mission.getEtat());
+
             missionLabel.setText(missionDetails);
 
-            // Appliquer une couleur de fond si sélectionnée
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
                 setForeground(list.getSelectionForeground());
@@ -135,43 +135,16 @@ public class FrameBenevole extends JFrame {
                 setBackground(list.getBackground());
                 setForeground(list.getForeground());
             }
-
             return this;
         }
     }
-    // Ajout dans la classe FrameBenevole
+
+    /**
+     * Getter pour le modèle de données de la liste des missions.
+     *
+     * @return Modèle de données de la liste des missions.
+     */
     public DefaultListModel<Mission> getMissionListModel() {
         return missionListModel;
     }
-
-/*
-    public static void main(String[] args) {
-        // Création de l'objet AllMissions
-        AllMissions allMissions = AllMissions.getInstance();
-
-        // Exemple de missions
-        Benevole benevole = new Benevole ("Elian", "Boaglio", "lalalla", "mdp","agriculteur");
-        Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", Place.HOME, "alice@example.com", "password123");
-        Mission mission1 = new Mission(MissionEtat.EN_COURS_DE_VALIDATION,"En cours", demandeur, Place.HOME);
-        Mission mission2 = new Mission(MissionEtat.INVALIDE,"En attente",  demandeur, Place.WORKPLACE);
-        Mission mission3 = new Mission("voiture maison hehe",  demandeur, Place.HOME);
-        Mission mission4 = new Mission("besoin de soin d'urgence",  demandeur, Place.HOSPITAL);
-        Mission mission5 = new Mission("un peu de compagnie",  demandeur, Place.EHPAD);
-
-        // Ajout des missions à la liste des missions
-        allMissions.addMission(mission1);
-        allMissions.addMission(mission2);
-        allMissions.addMission(mission3);
-        allMissions.addMission(mission4);
-        allMissions.addMission(mission5);
-
-        // Lancer l'application GUI
-        SwingUtilities.invokeLater(() -> {
-            FrameBenevole frame = new FrameBenevole(allMissions,benevole);
-            frame.setVisible(true);
-        });
-    }
-
-*/
-
 }

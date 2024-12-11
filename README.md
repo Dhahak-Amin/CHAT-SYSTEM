@@ -86,6 +86,7 @@ Compilez et exécutez avec Maven :
     mvn clean install
     mvn compile 
     mvn exec:java -Dexec.mainClass="fr.insa.maven.demo.demoMavenProject.Main"
+    Remarque : il faut executer cette commande si vous utiliser Winows:  mvn exec:java `-Dexec.mainClass=fr.insa.maven.demo.demoMavenProject.Main
 
     Interagissez avec le programme via l'interface graphique Swing.
 

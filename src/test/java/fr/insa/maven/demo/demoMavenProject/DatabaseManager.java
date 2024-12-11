@@ -4,21 +4,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
-import java.util.Arrays;
 
+/**
+ * Classe utilitaire pour la gestion de la base de données.
+ * Fournit des méthodes pour vérifier, nettoyer, et exécuter des commandes SQL sur la base de données.
+ */
 public class DatabaseManager {
 
     // Informations de connexion au serveur MySQL
     private static final String SERVER_URL = "jdbc:mysql://localhost:3306/";
-    private static final String DATABASE_NAME = "test_db";
+    private static final String DATABASE_NAME = "test_db"; // Nom de la base de données utilisée pour les tests
     public static final String DB_URL = SERVER_URL + DATABASE_NAME;
-    public static final String USER = "root"; // ou ton utilisateur MySQL
-    public static final String PASS = "root"; // ou ton mot de passe MySQL
+    public static final String USER = "root"; // Nom d'utilisateur MySQL
+    public static final String PASS = "root"; // Mot de passe MySQL
 
     // Chemin du fichier SQL d'initialisation
     public static final String SQL_FILE_PATH = "src/test/resources/Sql_Test.sql";
 
-    // Méthode pour s'assurer que la base de données existe
+    /**
+     * Vérifie que la base de données spécifiée existe, et la crée si nécessaire.
+     * En cas d'erreur, une exception Runtime est levée.
+     */
     public static void ensureDatabaseExists() {
         try (Connection conn = DriverManager.getConnection(SERVER_URL, USER, PASS);
              Statement stmt = conn.createStatement()) {
@@ -31,16 +37,21 @@ public class DatabaseManager {
         }
     }
 
-    // Méthode pour exécuter un fichier SQL via MySQL CLI avec gestion multi-OS
+    /**
+     * Exécute un fichier SQL en utilisant la CLI MySQL.
+     * Cette méthode gère différents systèmes d'exploitation (Windows, Linux, MacOS).
+     *
+     * @param sqlFilePath Chemin du fichier SQL à exécuter.
+     */
     public static void executeSqlFileWithCli(String sqlFilePath) {
         String osName = System.getProperty("os.name").toLowerCase();
         String[] command;
 
         if (osName.contains("win")) {
-            // Commande Windows
+            // Commande pour Windows
             command = new String[]{"cmd.exe", "/c", "\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe\" -u " + USER + " -p" + PASS + " " + DATABASE_NAME + " < " + sqlFilePath};
         } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("mac")) {
-            // Commande Linux/MacOS
+            // Commande pour Linux/MacOS
             command = new String[]{"/bin/sh", "-c", "mysql -u " + USER + " -p" + PASS + " " + DATABASE_NAME + " < " + sqlFilePath};
         } else {
             throw new RuntimeException("Système d'exploitation non supporté : " + osName);
@@ -49,6 +60,7 @@ public class DatabaseManager {
         try {
             Process process = Runtime.getRuntime().exec(command);
 
+            // Capture et affiche la sortie standard et les erreurs de la CLI
             try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                  BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 
@@ -64,6 +76,7 @@ public class DatabaseManager {
                 }
             }
 
+            // Vérifie le code de sortie pour détecter des erreurs
             int exitCode = process.waitFor();
             if (exitCode == 0) {
                 System.out.println("Fichier SQL exécuté avec succès via MySQL CLI.");
@@ -76,19 +89,29 @@ public class DatabaseManager {
         }
     }
 
-    // Méthode pour obtenir une connexion
+    /**
+     * Retourne une connexion à la base de données spécifiée.
+     *
+     * @return Connexion SQL active.
+     * @throws SQLException Si la connexion échoue.
+     */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
-    // Méthode pour vérifier si une table existe
+    /**
+     * Vérifie si une table existe dans la base de données.
+     *
+     * @param tableName Nom de la table à vérifier.
+     * @return True si la table existe, sinon False.
+     */
     public static boolean checkTableExists(String tableName) {
         String checkTableQuery = "SHOW TABLES LIKE ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(checkTableQuery)) {
             stmt.setString(1, tableName);
             try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next(); // Si une table correspond au nom, on retourne true
+                return rs.next(); // Retourne vrai si une correspondance est trouvée
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -96,6 +119,10 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Nettoie la base de données en supprimant toutes les données des tables spécifiées.
+     * Cette méthode est utilisée principalement pour les tests.
+     */
     public static void cleanDatabase() {
         String[] cleanSQL = {
                 "DELETE FROM avis",
@@ -108,14 +135,13 @@ public class DatabaseManager {
 
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
-            // Exécuter chaque requête DELETE séparément
+            // Exécute chaque commande DELETE pour vider les tables
             for (String query : cleanSQL) {
-                stmt.executeUpdate(query);  // Exécuter chaque requête pour nettoyer la base de données
+                stmt.executeUpdate(query);
             }
             System.out.println("Base de données nettoyée.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }

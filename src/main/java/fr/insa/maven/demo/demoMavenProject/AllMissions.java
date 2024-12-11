@@ -4,25 +4,35 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe Singleton pour gérer toutes les missions. Cette classe permet d'interagir
+ * avec la base de données et de maintenir une liste synchronisée des missions en mémoire.
+ */
 public class AllMissions {
+
     // Instance unique (Singleton)
     private static volatile AllMissions instance;
 
+    // Liste des missions en mémoire
     private List<Mission> missions;
     private Connection conn;
 
-    // Constructeur privé pour empêcher les instances externes
+    /**
+     * Constructeur privé pour empêcher les instanciations externes.
+     */
     private AllMissions() {
         this.missions = new ArrayList<>();
         try {
-            // Utilisation de RemoteDatabaseManager pour gérer la connexion
             this.conn = RemoteDatabaseManager.getInstance().getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // Obtenir l'instance unique (Singleton)
+    /**
+     * Retourne l'instance unique de la classe.
+     * @return L'instance unique de AllMissions.
+     */
     public static AllMissions getInstance() {
         if (instance == null) {
             synchronized (AllMissions.class) {
@@ -34,19 +44,22 @@ public class AllMissions {
         return instance;
     }
 
+    /**
+     * Enregistre ou met à jour une mission dans la base de données.
+     * Recharge les missions après chaque modification.
+     * @param mission La mission à enregistrer ou mettre à jour.
+     */
     public void enregistrerMission2(Mission mission) {
         try {
-            // Vérifie si la mission existe déjà dans la base de données
             String checkSql = "SELECT COUNT(*) FROM Mission WHERE intitule = ? AND demandeur_email = ?";
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
                 checkStmt.setString(1, mission.getIntitule());
                 checkStmt.setString(2, mission.getDemandeur().getEmail());
                 try (ResultSet rs = checkStmt.executeQuery()) {
-                    rs.next(); // Passe à la première ligne des résultats
+                    rs.next();
                     int count = rs.getInt(1);
 
                     if (count == 0) {
-                        // Si la mission n'existe pas, insère une nouvelle entrée
                         String insertSql = "INSERT INTO Mission (intitule, place, etat, demandeur_email, benevole_email) VALUES (?, ?, ?, ?, ?)";
                         try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
                             insertStmt.setString(1, mission.getIntitule());
@@ -57,7 +70,6 @@ public class AllMissions {
                             insertStmt.executeUpdate();
                         }
                     } else {
-                        // Si la mission existe déjà, effectue une mise à jour
                         String updateSql = "UPDATE Mission SET place = ?, etat = ?, benevole_email = ? WHERE intitule = ? AND demandeur_email = ?";
                         try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                             updateStmt.setString(1, mission.getPlace().name());
@@ -70,20 +82,25 @@ public class AllMissions {
                     }
                 }
             }
-
-            // Recharge les missions depuis la base pour synchroniser avec la mémoire
             loadMissionsFromDatabase();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // Méthodes CRUD et autres fonctionnalités
+    /**
+     * Ajoute une mission à la liste en mémoire.
+     * @param mission La mission à ajouter.
+     */
     public void addMission(Mission mission) {
         missions.add(mission);
     }
 
+    /**
+     * Supprime une mission de la liste en mémoire et de la base de données.
+     * @param mission La mission à supprimer.
+     * @return true si la mission a été supprimée, false sinon.
+     */
     public boolean removeMission(Mission mission) {
         boolean removed = missions.removeIf(m ->
                 m.getIntitule().equals(mission.getIntitule()) &&
@@ -106,26 +123,26 @@ public class AllMissions {
         return removed;
     }
 
+    /**
+     * Retourne la liste des missions en mémoire.
+     * @return La liste des missions.
+     */
     public List<Mission> getMissions() {
         return missions;
     }
 
+    /**
+     * Recharge toutes les missions depuis la base de données dans la liste en mémoire.
+     */
     public void loadMissionsFromDatabase() {
         try {
             String sql = "SELECT * FROM Mission";
             try (PreparedStatement stmt = conn.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
-
-                missions.clear(); // Réinitialiser la liste
-
+                missions.clear();
                 while (rs.next()) {
                     Demandeur demandeur = getDemandeurByEmail(rs.getString("demandeur_email"));
-                    Benevole benevole = null;
-
-                    if (rs.getString("benevole_email") != null) {
-                        benevole = getBenevoleByEmail(rs.getString("benevole_email"));
-                    }
-
+                    Benevole benevole = rs.getString("benevole_email") != null ? getBenevoleByEmail(rs.getString("benevole_email")) : null;
                     Mission mission = new Mission(
                             MissionEtat.valueOf(rs.getString("etat")),
                             rs.getString("intitule"),
@@ -141,6 +158,12 @@ public class AllMissions {
         }
     }
 
+    /**
+     * Retourne un demandeur à partir de son email.
+     * @param email Email du demandeur.
+     * @return L'objet Demandeur correspondant.
+     * @throws SQLException Si aucun demandeur n'est trouvé.
+     */
     public Demandeur getDemandeurByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM Demandeur WHERE email = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -162,6 +185,12 @@ public class AllMissions {
         throw new SQLException("Demandeur non trouvé !");
     }
 
+    /**
+     * Retourne un bénévole à partir de son email.
+     * @param email Email du bénévole.
+     * @return L'objet Benevole correspondant.
+     * @throws SQLException Si aucun bénévole n'est trouvé.
+     */
     public Benevole getBenevoleByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM Benevole WHERE email = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -181,22 +210,20 @@ public class AllMissions {
         throw new SQLException("Bénévole non trouvé !");
     }
 
-    // Méthode pour enregistrer une mission dans la base de données
-    public void enregistrerMission(Mission mission) {
+    /**
+     * Efface toutes les missions de la base de données et de la liste en mémoire.
+     */
+    public void clearMissions() {
+        missions.clear();
         try {
-            String sql = "INSERT INTO Mission (intitule, place, etat, demandeur_email, benevole_email) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, mission.getIntitule());
-            stmt.setString(2, mission.getPlace().name());
-            stmt.setString(3, mission.getEtat().name());
-            stmt.setString(4, mission.getDemandeur().getEmail());
-            stmt.setString(5, mission.getBenevole() != null ? mission.getBenevole().getEmail() : null);
-            stmt.executeUpdate();
+            String sql = "DELETE FROM Mission";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
     // Méthode pour trouver une mission par son intitulé
     public Mission findMission(String intitule) {
         for (Mission mission : missions) {
@@ -214,16 +241,5 @@ public class AllMissions {
     public void clear() {
         missions.clear();
     }
-    // Efface toutes les missions de la liste et de la base de données
-    public void clearMissions() {
-        missions.clear(); // Vide la liste en mémoire
-        try {
-            String sql = "DELETE FROM Mission"; // Supprime toutes les missions de la base
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

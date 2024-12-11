@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
+/**
+ * Classe RemoteDatabaseManager pour gérer la base de données distante.
+ * Cette classe utilise le pattern Singleton pour garantir une seule instance active
+ * et fournit des méthodes utilitaires pour gérer la connexion, les tables, et l'exécution de fichiers SQL.
+ */
 public class RemoteDatabaseManager {
 
     // Informations de connexion au serveur MySQL distant
@@ -16,13 +18,16 @@ public class RemoteDatabaseManager {
     public static final String DB_URL = SERVER_URL + DATABASE_NAME;
     public static final String USER = "projet_gei_012";
     public static final String PASS = "dith1Que";
+
     // Instance unique (Singleton)
     private static RemoteDatabaseManager instance;
 
     // Chemin du fichier SQL d'initialisation
     public static final String SQL_FILE_PATH = "src/main/resources/remote_init.sql";
 
-    // Méthode pour vérifier que la base de données existe et y accéder
+    /**
+     * Vérifie que la base de données existe, sinon la crée.
+     */
     public static void ensureDatabaseExists() {
         try (Connection conn = DriverManager.getConnection(SERVER_URL, USER, PASS);
              Statement stmt = conn.createStatement()) {
@@ -35,7 +40,10 @@ public class RemoteDatabaseManager {
         }
     }
 
-    // Méthode pour obtenir l'instance unique
+    /**
+     * Retourne l'instance unique de RemoteDatabaseManager.
+     * @return L'instance Singleton.
+     */
     public static RemoteDatabaseManager getInstance() {
         if (instance == null) {
             synchronized (RemoteDatabaseManager.class) {
@@ -47,17 +55,21 @@ public class RemoteDatabaseManager {
         return instance;
     }
 
-
-    // Méthode pour exécuter un fichier SQL via MySQL CLI avec gestion multi-OS
+    /**
+     * Exécute un fichier SQL via l'interface de ligne de commande MySQL (CLI).
+     * La commande est adaptée en fonction du système d'exploitation.
+     *
+     * @param sqlFilePath Chemin du fichier SQL à exécuter.
+     */
     public static void executeSqlFileWithCli(String sqlFilePath) {
         String osName = System.getProperty("os.name").toLowerCase();
         String[] command;
 
         if (osName.contains("win")) {
-            // Commande Windows
+            // Commande pour Windows
             command = new String[]{"cmd.exe", "/c", "\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe\" -u " + USER + " -p" + PASS + " " + DATABASE_NAME + " < " + sqlFilePath};
         } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("mac")) {
-            // Commande Linux/MacOS
+            // Commande pour Linux/MacOS
             command = new String[]{"/bin/sh", "-c", "mysql -u " + USER + " -p" + PASS + " " + DATABASE_NAME + " < " + sqlFilePath};
         } else {
             throw new RuntimeException("Système d'exploitation non supporté : " + osName);
@@ -93,12 +105,20 @@ public class RemoteDatabaseManager {
         }
     }
 
-    // Méthode pour obtenir une connexion
+    /**
+     * Retourne une connexion à la base de données distante.
+     * @return Connexion SQL à la base distante.
+     * @throws SQLException En cas d'erreur de connexion.
+     */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
-    // Méthode pour vérifier si une table existe
+    /**
+     * Vérifie si une table existe dans la base de données.
+     * @param tableName Nom de la table à vérifier.
+     * @return true si la table existe, false sinon.
+     */
     public static boolean checkTableExists(String tableName) {
         String checkTableQuery = "SHOW TABLES LIKE ?";
         try (Connection conn = getConnection();
@@ -113,7 +133,9 @@ public class RemoteDatabaseManager {
         }
     }
 
-    // Méthode pour nettoyer les données des tables
+    /**
+     * Nettoie toutes les données des tables dans la base de données distante.
+     */
     public static void cleanDatabase() {
         String[] cleanSQL = {
                 "DELETE FROM Avis",

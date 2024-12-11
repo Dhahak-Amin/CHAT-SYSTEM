@@ -16,6 +16,9 @@ public class FrameDemandeurTest {
 
     @BeforeEach
     void setUp() {
+
+        DatabaseManager.ensureDatabaseExists();
+        DatabaseManager.executeSqlFileWithCli(DatabaseManager.SQL_FILE_PATH);
         // Création du demandeur
         demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", Place.HOME, "alice@example.com", "password123");
 

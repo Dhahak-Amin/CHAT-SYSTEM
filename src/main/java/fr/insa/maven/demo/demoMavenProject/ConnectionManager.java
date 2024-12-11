@@ -7,10 +7,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.regex.Pattern;
-public class ConnectionManager {
 
+
+/**
+ * Classe `ConnectionManager` pour gérer les connexions à la base de données
+ * et fournir des fonctionnalités pour interagir avec les tables de manière générique.
+ */
+public class ConnectionManager {
+    // Instance unique pour le Singleton
     private static ConnectionManager instance;
+    // Connexion à la base de données
     private Connection conn;
+    /**
+     * Retourne l'instance unique du `ConnectionManager`.
+     * Utilise le modèle Singleton pour assurer qu'il n'y a qu'une seule instance.
+     *
+     * @return L'instance de `ConnectionManager`.
+     */
 
     public static ConnectionManager getInstance() {
         if (instance == null) {
@@ -35,6 +48,11 @@ public class ConnectionManager {
         }
     }
 
+    /**
+     * Retourne la connexion à la base de données.
+     *
+     * @return Connexion active.
+     */
     public Connection getConnection() {
         return conn;
     }
@@ -55,6 +73,18 @@ public class ConnectionManager {
         String emailRegex = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
         return Pattern.matches(emailRegex, email);
     }
+
+    // === Authentification et Enregistrement ===
+
+    /**
+     * Authentifie ou enregistre un utilisateur en fonction de son rôle.
+     *
+     * @param email    Adresse email de l'utilisateur.
+     * @param password Mot de passe de l'utilisateur.
+     * @param role     Rôle de l'utilisateur (demandeur, bénévole, validateur).
+     */
+
+
     public void authenticateOrRegisterUser(String email, String password, String role) {
         try {
             // Valider le format de l'email

@@ -5,22 +5,34 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Classe FrameValidateur
+ * Gère l'interface graphique pour les validateurs, leur permettant
+ * de valider ou invalider les missions.
+ */
 public class FrameValidateur extends JFrame {
-    private AllMissions allMissions;
+    private AllMissions allMissions; // Instance de AllMissions
+    private Validateur validateur; // Validateur connecté
+    private DefaultListModel<Mission> missionListModel; // Modèle de liste pour les missions
+    private JList<Mission> missionList; // Liste graphique pour afficher les missions
+    private JButton validateButton; // Bouton pour valider une mission
+    private JButton invalidateButton; // Bouton pour invalider une mission
 
-    private Validateur validateur;
-    private DefaultListModel<Mission> missionListModel;
-    private JList<Mission> missionList;
-    private JButton validateButton;
-    private JButton invalidateButton;
-
+    /**
+     * Constructeur de FrameValidateur
+     *
+     * @param allMissions Instance des missions
+     * @param validateur  Validateur connecté
+     */
     public FrameValidateur(AllMissions allMissions, Validateur validateur) {
         this.allMissions = allMissions;
+        this.validateur = validateur;
+
+        // Initialisation des composants
         this.missionListModel = new DefaultListModel<>();
         this.missionList = new JList<>(missionListModel);
         this.validateButton = new JButton("Valider la mission");
         this.invalidateButton = new JButton("Invalider la mission");
-        this.validateur = validateur;
 
         // Configuration de la fenêtre
         setTitle("Validation des Missions");
@@ -28,50 +40,55 @@ public class FrameValidateur extends JFrame {
         setSize(600, 400);
         setLayout(new BorderLayout());
 
-        // Configurer le renderer pour afficher les missions
+        // Configurer la liste des missions avec un renderer personnalisé
         missionList.setCellRenderer(new MissionCellRenderer());
         missionList.setFixedCellHeight(50);
 
-        // Ajouter la liste des missions à un JScrollPane
+        // Ajouter la liste des missions dans un JScrollPane
         JScrollPane scrollPane = new JScrollPane(missionList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Panneau des boutons
+        // Panneau pour les boutons
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(validateButton);
         buttonPanel.add(invalidateButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Actions des boutons
-        validateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeMissionStatus(MissionEtat.VALIDEE);
-            }
-        });
+        // Configurer les actions des boutons
+        configureButtonActions();
 
-        invalidateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeMissionStatus(MissionEtat.INVALIDE);
-            }
-        });
-
-        // Charger la liste des missions
+        // Charger les missions et mettre à jour l'affichage
         updateMissionList();
     }
 
+    /**
+     * Configure les actions des boutons de validation et d'invalidation.
+     */
+    private void configureButtonActions() {
+        validateButton.addActionListener(e -> changeMissionStatus(MissionEtat.VALIDEE));
+        invalidateButton.addActionListener(e -> changeMissionStatus(MissionEtat.INVALIDE));
+    }
+
+    /**
+     * Met à jour la liste des missions affichées.
+     * Affiche uniquement les missions en cours de validation.
+     */
     private void updateMissionList() {
+        missionListModel.clear(); // Réinitialiser la liste
         for (Mission mission : allMissions.getMissions()) {
-            // Filtrer les missions qui nécessitent une validation
             if (mission.getEtat() == MissionEtat.EN_COURS_DE_VALIDATION) {
                 missionListModel.addElement(mission);
             }
         }
-       // System.out.println("Missions en attente de validation : " + missionListModel.size());
     }
 
-    public String getBenevoleDetails(Benevole benevole) {
+    /**
+     * Retourne les détails du bénévole associé à une mission.
+     *
+     * @param benevole Bénévole de la mission
+     * @return Détails du bénévole ou "Aucun bénévole attribué"
+     */
+    private String getBenevoleDetails(Benevole benevole) {
         if (benevole != null) {
             return benevole.getFirstname() + " " + benevole.getLastname() + " (" + benevole.getMetier() + ")";
         } else {
@@ -79,6 +96,11 @@ public class FrameValidateur extends JFrame {
         }
     }
 
+    /**
+     * Change le statut de la mission sélectionnée (validée ou invalidée).
+     *
+     * @param newStatus Nouveau statut de la mission
+     */
     private void changeMissionStatus(MissionEtat newStatus) {
         Mission selectedMission = missionList.getSelectedValue();
 
@@ -86,12 +108,11 @@ public class FrameValidateur extends JFrame {
             Benevole benevole = selectedMission.getBenevole();
 
             if (benevole == null) {
-                // Avertir si aucun bénévole n'est assigné
                 JOptionPane.showMessageDialog(this,
                         "Cette mission n'a pas encore de bénévole assigné. Impossible de valider ou d'invalider.",
                         "Erreur",
                         JOptionPane.WARNING_MESSAGE);
-                return; // Sortir de la méthode
+                return;
             }
 
             if (newStatus == MissionEtat.INVALIDE) {
@@ -108,21 +129,21 @@ public class FrameValidateur extends JFrame {
                             "L'invalidation nécessite un motif.",
                             "Erreur",
                             JOptionPane.WARNING_MESSAGE);
-                    return; // Annuler l'invalidation si aucun motif n'est fourni
+                    return;
                 }
 
-                // Ajouter le motif d'invalidation
-                Motif mess = new Motif(this.validateur, motif);
-                selectedMission.setMotif(mess);
+                // Ajouter le motif à la mission
+                Motif invalidationMotif = new Motif(this.validateur, motif);
+                selectedMission.setMotif(invalidationMotif);
             }
 
-            // Modifier le statut de la mission
+            // Mettre à jour le statut de la mission
             selectedMission.setEtat(newStatus);
 
-            // Enregistrer les modifications dans la base de données
+            // Enregistrer la mission dans la base de données
             allMissions.enregistrerMission2(selectedMission);
 
-            // Mettre à jour la liste des missions
+            // Mettre à jour l'affichage
             updateMissionList();
 
             // Message de confirmation
@@ -138,10 +159,9 @@ public class FrameValidateur extends JFrame {
         }
     }
 
-
-
-    // Renderer pour afficher les détails de la mission
-    // Renderer pour afficher les détails de la mission
+    /**
+     * Renderer personnalisé pour afficher les détails de la mission.
+     */
     private class MissionCellRenderer extends JPanel implements ListCellRenderer<Mission> {
         private JLabel missionLabel;
 
@@ -180,31 +200,3 @@ public class FrameValidateur extends JFrame {
         }
     }
 }
-
-
-
-/*
-        // Lancer l'interface
-    public static void main(String[] args) {
-        AllMissions allMissions = AllMissions.getInstance();
-
-        // Exemple de missions
-        Validateur validateur = new Validateur ("Elieean", "Boagaalio", "lalalla", "mdp");
-        Benevole benevole = new Benevole ("Elian", "Boaglio", "lalalla", "mdp","agriculteur");
-        Demandeur demandeur = new Demandeur("Alice", "Dupont", "Besoin d'aide", "Jardin", Place.HOME, "alice@example.com", "password123");
-        Mission mission1 = new Mission(MissionEtat.EN_COURS_DE_VALIDATION, "Mission 1", demandeur, Place.HOME,benevole);
-        Mission mission2 = new Mission(MissionEtat.EN_COURS_DE_VALIDATION, "Mission 2", demandeur, Place.HOSPITAL,benevole);
-        Mission mission3 = new Mission(MissionEtat.INVALIDE, "Mission 3", demandeur, Place.WORKPLACE,benevole);
-
-        allMissions.addMission(mission1);
-        allMissions.addMission(mission2);
-        allMissions.addMission(mission3);
-
-        // Lancer l'application
-        SwingUtilities.invokeLater(() -> {
-            FrameValidateur frame = new FrameValidateur(allMissions, validateur);
-            frame.setVisible(true);
-        });
-    }
-
- */

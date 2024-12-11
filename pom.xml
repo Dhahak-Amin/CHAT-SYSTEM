@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<db.url>jdbc:mysql://localhost:3306/testdb</db.url> <!-- Par défaut -->
 		<db.user>root</db.user>
-		<db.password></db.password>
+		<db.password>root</db.password>
 	</properties>
 
 	<dependencies>
@@ -36,14 +36,6 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.33</version>
 		</dependency>
-
-		<!-- H2 Database pour les tests -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>2.2.220</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -60,19 +52,26 @@
 				</configuration>
 			</plugin>
 
-			<!-- Plugin pour construire le JAR -->
+			<!-- Plugin pour générer un JAR exécutable avec toutes les dépendances -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.3.0</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>fr.insa.maven.demo.demoMavenProject.Main</mainClass> <!-- Remplace par la classe principale -->
-						</manifest>
-					</archive>
-				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>fr.insa.maven.demo.demoMavenProject.Main</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Plugin pour exécuter une classe principale -->
@@ -80,10 +79,19 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<mainClass>fr.insa.maven.demo.demoMavenProject.Main</mainClass> <!-- Classe principale -->
+					<mainClass>fr.insa.maven.demo.demoMavenProject.Main</mainClass>
+					<classpathScope>compile</classpathScope>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
@@ -94,7 +102,7 @@
 			<properties>
 				<db.url>jdbc:mysql://localhost:3306/testdb</db.url>
 				<db.user>root</db.user>
-				<db.password>password</db.password>
+				<db.password>root</db.password>
 			</properties>
 		</profile>
 	</profiles>

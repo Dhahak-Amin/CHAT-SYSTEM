@@ -5,7 +5,7 @@
     Dhahak Smith Mohamed Ali Amine
     📧 dhahak@insa-toulouse.fr
     Boaglio Elian
-    📧 elian.boaglio@insa-toulouse.fr
+    📧 boaglio@insa-toulouse.fr
 
 🚀 Description du Projet
 
@@ -86,8 +86,8 @@ Compilez et exécutez avec Maven :
     mvn clean install
     mvn compile 
     mvn exec:java -Dexec.mainClass="fr.insa.maven.demo.demoMavenProject.Main"
-    Remarque : il faut executer cette commande si vous utiliser Winows:  mvn exec:java `-Dexec.mainClass=fr.insa.maven.demo.demoMavenProject.Main
-
+    Remarque : il faut executer cette commande si vous utiliser Windows:  mvn exec:java `-Dexec.mainClass=fr.insa.maven.demo.demoMavenProject.Main
+a
     Interagissez avec le programme via l'interface graphique Swing.
 
 🧪 Tester avec la base de données locale :
@@ -108,7 +108,7 @@ mvn test
     Dhahak Smith Mohamed Ali Amine
     📧 dhahak@insa-toulouse.fr
     Boaglio Elian
-    📧 elian.boaglio@insa-toulouse.fr
+    📧 boaglio@insa-toulouse.fr
 
 🎉 Merci !
 
